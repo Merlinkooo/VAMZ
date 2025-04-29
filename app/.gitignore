@@ -1,0 +1,11 @@
+.gradle/
+/build/
+local.properties
+.idea/workspace.xml
+.idea/tasks/
+.idea/gradle.xml
+.idea/shelf/
+*.iml
+/captures/
+.DS_Store
+/app/build/outputs/apk/* # Ignoruje len finálne APK súbory, nie všetky build outputy
