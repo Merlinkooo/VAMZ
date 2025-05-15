@@ -54,29 +54,27 @@ fun ScreenAfterNFCScan(){
                     Modifier.padding(12.dp).
                     align(Alignment.CenterHorizontally))
 
+                LargeFloatingActionButton(
+                    onClick = {},
+                    content = {
+                        Column {
+                            Icon(
+                                Icons.Default.Warning,
+                                "Vytvor report",
+                                modifier = Modifier
+                                    .scale(2f)
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(bottom = 4.dp)
+                            )
+                            Text(
+                                text = "Report",
+                                textAlign = TextAlign.Center)
+                        }
+                    }
+                )
             }
         },
-        floatingActionButton = {
-            LargeFloatingActionButton(
-                onClick = {},
-                content = {
-                    Column {
-                        Icon(
-                            Icons.Default.Warning,
-                            "Vytvor report",
-                            modifier = Modifier
-                                .scale(2f)
-                                .align(Alignment.CenterHorizontally)
-                                .padding(bottom = 4.dp)
-                        )
-                        Text(
-                            text = "Report",
-                            textAlign = TextAlign.Center)
-                    }
-                }
-            )
-        },
-        floatingActionButtonPosition = FabPosition.Start
+
 
 
             )
