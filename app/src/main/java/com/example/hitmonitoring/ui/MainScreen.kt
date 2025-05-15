@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -35,13 +36,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hitmonitoring.R
+import com.example.hitmonitoring.ui.theme.Purple80
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
@@ -49,17 +54,18 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 fun MainScreen() {
     Scaffold(
         topBar = {
-            Top(true)
+            Top(true,true)
         },
         bottomBar = {
-            BottomAp(modifier = Modifier.fillMaxWidth().padding(12.dp))
+            BottomAp(modifier = Modifier.fillMaxWidth().padding(12.dp).background(Color.Transparent))
         },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .wrapContentHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally // Horizontálne vycentruje obsah Columnu
+                    .wrapContentSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
                 HorizontalDivider(
                     color = Color.Black,
@@ -78,7 +84,7 @@ fun MainScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Top(isInMainScreen: Boolean, modifier: Modifier = Modifier) {
+fun Top(isInMainScreen: Boolean,existsConnectionWithServer: Boolean, modifier: Modifier = Modifier) {
     TopAppBar(
         title = {
             Text(text = stringResource(R.string.app_name), textAlign = TextAlign.Start)
@@ -93,13 +99,20 @@ fun Top(isInMainScreen: Boolean, modifier: Modifier = Modifier) {
                 }
             }
         },
-        modifier = modifier.fillMaxWidth(), // TopAppBar zaberie celú šírku
+        modifier = modifier.fillMaxWidth(),
         actions = {
-            Icon(
-                imageVector = Icons.Outlined.CheckCircle,
-                contentDescription = null,
-                tint = Color.Red
-            )
+            val fillColor = if (existsConnectionWithServer) Color.Green else Color.Red
+
+            Canvas(
+                modifier = Modifier.size(24.dp)
+            ) {
+                drawCircle(
+                    color = fillColor,
+                    radius = size.minDimension / 2,
+                    center = Offset(size.width / 2, size.height / 2),
+                    style = Fill
+                )
+            }
             IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
@@ -113,35 +126,43 @@ fun Top(isInMainScreen: Boolean, modifier: Modifier = Modifier) {
 @Composable
 fun Info(nameOfTheGuard: String, lastCheckInfo: String, modifier: Modifier = Modifier) {
     Column(
-        verticalArrangement = Arrangement.Center, // Vertikálne vycentruje obsah Columnu
-        horizontalAlignment = Alignment.CenterHorizontally, // Horizontálne vycentruje obsah Columnu
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(16.dp)
-            .border(2.dp,Color.Black)
-            .background(Color.Gray)
-            .wrapContentSize()
+            .border(2.dp, Color.Black)
+            .background(Purple80)
+            .size(240.dp)
     ) {
-        Row(Modifier.fillMaxWidth().weight(1f),
+        Row(Modifier.fillMaxWidth().weight(1f).wrapContentSize().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center) {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = null,
-                modifier = Modifier.padding(end = 12.dp)
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(36.dp)
             )
-            Text(text = nameOfTheGuard)
+            Text(
+                text = nameOfTheGuard,
+                fontSize = 24.sp,
+                textAlign = TextAlign.Start
+            )
         }
-        Row(Modifier.fillMaxWidth().padding(top = 8.dp).weight(1f)
+        Row(Modifier.fillMaxWidth().padding(8.dp).weight(1f).wrapContentSize()
             ,verticalAlignment = Alignment.CenterVertically
             , horizontalArrangement = Arrangement.Center) {
             Icon(
                 imageVector = Icons.Default.Done,
                 contentDescription = null,
-                modifier = Modifier.padding(end = 12.dp)
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(36.dp)
             )
             Text(
                 text = lastCheckInfo,
-                modifier = Modifier.padding(12.dp)
+                fontSize = 24.sp,
+                textAlign = TextAlign.Start
             )
         }
     }
