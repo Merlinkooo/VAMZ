@@ -1,6 +1,9 @@
 package com.example.hitmonitoring
 
+
 import MainScreen
+import ReportInfoCard
+import ReportScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,7 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             HitMonitoringTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = Color.Gray) {
-                    ScreenAfterNFCScan()
+                    ReportScreen()
                 }
             }
         }

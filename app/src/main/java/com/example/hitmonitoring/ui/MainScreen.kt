@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
@@ -56,7 +58,8 @@ fun MainScreen() {
             Column(
                 modifier = Modifier
                      // Zabezpečí, že Column zaberie celý dostupný priestor
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .wrapContentHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally // Horizontálne vycentruje obsah Columnu
             ) {
                 HorizontalDivider(
@@ -113,7 +116,11 @@ fun Info(nameOfTheGuard: String, lastCheckInfo: String, modifier: Modifier = Mod
     Column(
         verticalArrangement = Arrangement.Center, // Vertikálne vycentruje obsah Columnu
         horizontalAlignment = Alignment.CenterHorizontally, // Horizontálne vycentruje obsah Columnu
-        modifier = modifier.padding(16.dp).border(2.dp,Color.Black).background(Color.Gray)
+        modifier = modifier
+            .padding(16.dp)
+            .border(2.dp,Color.Black)
+            .background(Color.Gray)
+            .wrapContentSize()
     ) {
         Row(Modifier.fillMaxWidth().weight(1f),
             verticalAlignment = Alignment.CenterVertically,
