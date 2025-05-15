@@ -90,10 +90,8 @@ fun ReportInfoCard() {
                 Image(
                     painter = painterResource(id = android.R.drawable.ic_menu_gallery), // Predvolený obrázok, nahraď svojím riešením
                     contentDescription = "Foto incidentu",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp), // Nastav požadovanú výšku pre zobrazenie obrázka
-                    contentScale = ContentScale.Crop // Oreže obrázok, aby vyplnil priestor
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(

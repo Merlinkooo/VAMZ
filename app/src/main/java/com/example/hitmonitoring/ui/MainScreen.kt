@@ -57,7 +57,6 @@ fun MainScreen() {
         content = { paddingValues ->
             Column(
                 modifier = Modifier
-                     // Zabezpečí, že Column zaberie celý dostupný priestor
                     .padding(paddingValues)
                     .wrapContentHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally // Horizontálne vycentruje obsah Columnu

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Hit Monitoring</string>
     <string name="back_to_main_screen">Returns to main screen</string>
+    <string name="report_sended">Report bol odoslaný</string>
 </resources>

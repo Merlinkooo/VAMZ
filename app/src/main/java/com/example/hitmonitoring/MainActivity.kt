@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.hitmonitoring.ui.ConfirmationScreen
 import com.example.hitmonitoring.ui.ScreenAfterNFCScan
 
 
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             HitMonitoringTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = Color.Gray) {
-                    ReportScreen()
+                    ConfirmationScreen(false)
                 }
             }
         }
