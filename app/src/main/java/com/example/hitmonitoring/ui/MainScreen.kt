@@ -12,12 +12,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.sharp.ArrowBack
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,7 +47,7 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 fun MainScreen() {
     Scaffold(
         topBar = {
-            Top()
+            Top(true)
         },
         bottomBar = {
             BottomAp(modifier = Modifier.fillMaxWidth().padding(12.dp))
@@ -73,10 +76,20 @@ fun MainScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Top(modifier: Modifier = Modifier) {
+fun Top(isInMainScreen: Boolean, modifier: Modifier = Modifier) {
     TopAppBar(
         title = {
             Text(text = stringResource(R.string.app_name), textAlign = TextAlign.Start)
+        },
+        navigationIcon = {
+            if (!isInMainScreen) {
+                IconButton(onClick = {}) {
+                    Icon(
+                        Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.back_to_main_screen) // Použi string resource pre lokalizáciu
+                    )
+                }
+            }
         },
         modifier = modifier.fillMaxWidth(), // TopAppBar zaberie celú šírku
         actions = {
