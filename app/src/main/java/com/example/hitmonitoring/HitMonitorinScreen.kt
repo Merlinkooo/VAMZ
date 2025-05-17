@@ -93,3 +93,4 @@ fun HitMonitoringTopAppBar(isInMainScreen: Boolean,
         }
     )
 }
+
