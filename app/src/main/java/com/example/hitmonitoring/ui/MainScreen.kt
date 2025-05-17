@@ -32,6 +32,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -44,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -136,8 +139,9 @@ fun Top(isInMainScreen: Boolean,
         existsConnectionWithServer: Boolean,
         modifier: Modifier = Modifier) {
 
-    var showMenu: Boolean = false
-    TopAppBar(
+    var showMenu by remember { mutableStateOf(false) }
+
+        TopAppBar(
         title = {
             Text(text = stringResource(R.string.app_name), textAlign = TextAlign.Start)
         },
@@ -175,6 +179,19 @@ fun Top(isInMainScreen: Boolean,
                     modifier = Modifier.size(dimensionResource(R.dimen.icon_size))
                 )
             }
+
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false}
+            ) {
+                DropdownMenuItem(
+                    onClick = { showMenu = false }, //doplniť logiku pre diagnostiku
+                    text = {Text(stringResource(R.string.identify_problem)) }
+                )
+
+
+            }
+
         }
     )
 }
