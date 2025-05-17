@@ -133,68 +133,7 @@ fun MainScreen() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Top(isInMainScreen: Boolean,
-        existsConnectionWithServer: Boolean,
-        modifier: Modifier = Modifier) {
 
-    var showMenu by remember { mutableStateOf(false) }
-
-        TopAppBar(
-        title = {
-            Text(text = stringResource(R.string.app_name), textAlign = TextAlign.Start)
-        },
-        navigationIcon = {
-            if (!isInMainScreen) {
-                IconButton(onClick = {}) {
-                    Icon(
-                        Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = stringResource(R.string.back_to_main_screen) // Použi string resource pre lokalizáciu
-                    )
-                }
-            }
-        },
-        modifier = modifier,
-        actions = {
-            val fillColor = if (existsConnectionWithServer) colorResource(R.color.green_indicator) else colorResource(R.color.red_indikator)
-
-            Canvas(
-                modifier = Modifier.size(24.dp)
-            ) {
-                drawCircle(
-                    color = fillColor,
-                    radius = size.minDimension / 2,
-                    center = Offset(size.width / 2, size.height / 2),
-                    style = Fill
-                )
-
-            }
-            IconButton(
-                modifier = Modifier.wrapContentSize(),
-                onClick = {showMenu = !showMenu}) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = null,
-                    modifier = Modifier.size(dimensionResource(R.dimen.icon_size))
-                )
-            }
-
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false}
-            ) {
-                DropdownMenuItem(
-                    onClick = { showMenu = false }, //doplniť logiku pre diagnostiku
-                    text = {Text(stringResource(R.string.identify_problem)) }
-                )
-
-
-            }
-
-        }
-    )
-}
 
 @Composable
 fun Info(nameOfTheGuard: String,
