@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Hit Monitoring</string>
-    <string name="back_to_main_screen">Returns to main screen</string>
+    <string name="back_to_main_screen">Návrat na hlavnú obrazovku</string>
     <string name="report_sended">Report bol odoslaný</string>
+    <string name="identify_problem">Diagnostikovať problém</string>
 </resources>

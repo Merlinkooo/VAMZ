@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ReportScreen(){
     Scaffold(
-        topBar = { Top(false) },
+        topBar = { Top(false,true) },
         bottomBar = { BottomApp() },
         content = { paddingValues ->
             Column(

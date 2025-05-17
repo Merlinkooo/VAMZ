@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             HitMonitoringTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = Color.Gray) {
-                    ConfirmationScreen(false)
+                    MainScreen()
                 }
             }
         }

@@ -32,7 +32,7 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 fun ScreenAfterNFCScan(){
     Scaffold(
         topBar = {
-            Top(false)
+            Top(false,true)
         },
 
         content = { paddingValues ->
