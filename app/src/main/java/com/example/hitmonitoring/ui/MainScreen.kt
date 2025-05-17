@@ -24,6 +24,7 @@ import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.sharp.ArrowBack
@@ -59,12 +60,16 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hitmonitoring.R
+import com.example.hitmonitoring.data.Control
 import com.example.hitmonitoring.ui.theme.GreenIndikator
+import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 import com.example.hitmonitoring.ui.theme.Purple80
 import com.example.hitmonitoring.ui.theme.PurpleGrey40
 import com.example.hitmonitoring.ui.theme.RedIndikator
@@ -72,7 +77,10 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    nameOfTheGuard: String,
+    lastControl: Control?,
+    modifier : Modifier = Modifier) {
     val mainPadding = dimensionResource(R.dimen.main_padding)
     Column(
         modifier = Modifier
@@ -81,24 +89,17 @@ fun MainScreen() {
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Top(
-            isInMainScreen = true,
-            existsConnectionWithServer = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize()
 
-        )
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(elevation = 5.dp, shape = MaterialTheme.shapes.medium),
+                .shadow(elevation = 5.dp, shape = MaterialTheme.shapes.large),
             thickness = dimensionResource(R.dimen.line_thicknes),
             color = Color.Black
         )
         Info(
             nameOfTheGuard = " Mike Madison",
-            lastCheckInfo = "Office no.6 08:26:33",
+            control = lastControl,
             modifier = Modifier
                 .wrapContentSize()
                 .padding(top = dimensionResource(R.dimen.big_padding))
@@ -137,18 +138,31 @@ fun MainScreen() {
 
 @Composable
 fun Info(nameOfTheGuard: String,
-         lastCheckInfo: String,
+         control: Control?,
          modifier: Modifier = Modifier) {
-
-    Card (
+    Card(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
+        // Guard info
+        Column(
+            modifier = Modifier.wrapContentSize(),
 
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.signed),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentSize()
                     .padding(dimensionResource(R.dimen.main_padding)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -166,12 +180,34 @@ fun Info(nameOfTheGuard: String,
                     textAlign = TextAlign.Start
                 )
             }
+        }
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(R.dimen.small_padding),
+                    end = dimensionResource(R.dimen.small_padding)),
+            thickness = dimensionResource(R.dimen.line_thicknes)
+        )
+        // Last Control Info
+        Column(
+            modifier = Modifier.wrapContentSize(),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.last_check),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth().
-                    padding(dimensionResource(R.dimen.main_padding)).
-                    wrapContentSize(),
-                verticalAlignment = Alignment.CenterVertically,
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.main_padding)),
                 horizontalArrangement = Arrangement.Start
             ) {
                 Icon(
@@ -182,13 +218,33 @@ fun Info(nameOfTheGuard: String,
                         .size(dimensionResource(R.dimen.icon_size))
                 )
                 Text(
-                    text = lastCheckInfo,
+                    text = control?.nameOfTheObject ?: "",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Start
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.main_padding)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start // Aligned to start
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_access_time_filled_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .size(dimensionResource(R.dimen.icon_size))
+                )
+                Text(
+                    text = control?.timeOfControl ?: "",
                     fontSize = 24.sp,
                     textAlign = TextAlign.Start
                 )
             }
         }
-
+    }
 }
 
 
@@ -207,8 +263,18 @@ fun BottomAppBarButton(icon: ImageVector,
     }
 }
 
-@Preview(showBackground = true)
+@Preview (showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+
+  HitMonitoringTheme {
+      MainScreen(
+          nameOfTheGuard = "Mike Madison",
+          lastControl = Control(
+              nameOfTheObject = "Office no.6",
+              timeOfControl = "08:46:34",
+              gpsCoordinations = " 98.73 , 73.79"
+          )
+      )
+  }
 }
