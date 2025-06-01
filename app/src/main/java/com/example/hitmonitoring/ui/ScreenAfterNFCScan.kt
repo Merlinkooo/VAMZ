@@ -1,10 +1,11 @@
 package com.example.hitmonitoring.ui
 
-import Top
+
 import android.graphics.Paint.Align
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 
 import androidx.compose.foundation.layout.fillMaxWidth
 
@@ -25,32 +26,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.example.hitmonitoring.data.Control
+import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
-fun ScreenAfterNFCScan(){
-    Scaffold(
-        topBar = {
-            Top(false,true)
-        },
+fun ScreenAfterNFCScan(control: Control, modifier: Modifier){
 
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues),
+    Column(
+                modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                HorizontalDivider(
-                    color = Color.Black,
-                    thickness = 2.dp,
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth()
-                )
 
                 ControlCheckInfo(
-                    "Office no.7 08:26:33",
+                    control,
                     Modifier.padding(12.dp).
                     align(Alignment.CenterHorizontally))
 
@@ -73,23 +64,23 @@ fun ScreenAfterNFCScan(){
                     }
                 )
             }
-        },
+        }
 
 
 
-            )
 
 
-}
+
+
 
 @Composable
-fun ControlCheckInfo(info: String, modifier: Modifier = Modifier){
+fun ControlCheckInfo(control: Control, modifier: Modifier = Modifier){
     Column(modifier = modifier
         .border(2.dp, color = Color.Black)
         .background(Color.Gray),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = info,
+            text = control.nameOfTheObject,
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(12.dp)
@@ -100,5 +91,18 @@ fun ControlCheckInfo(info: String, modifier: Modifier = Modifier){
             modifier = Modifier.background(Color.Green)
         )
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ScreenNFCPriew(){
+    HitMonitoringTheme {
+        ScreenAfterNFCScan(Control(
+            nameOfTheObject =  "Kancelária č.10",
+            timeOfControl = "08:46:53",
+            gpsCoordinations = ""
+            ), Modifier.fillMaxSize()
+        )
     }
 }

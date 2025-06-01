@@ -1,55 +1,67 @@
+package com.example.hitmonitoring.ui
+
+import android.os.Build.VERSION_CODES.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.Send
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.compose.ui.res.stringResource
 
 
 
 @Composable
 fun ReportScreen(){
-    Scaffold(
-        topBar = { Top(false,true) },
-        bottomBar = { BottomApp() },
-        content = { paddingValues ->
+
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(16.dp)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                HorizontalDivider(
-                    color = Color.Black,
-                    thickness = 2.dp,
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth()
-                )
+
                 ReportInfoCard()
+                IconButton(onClick = {}) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Sharp.Send,
+                            contentDescription = null
+                        )
+                        Text(text = stringResource(com.example.hitmonitoring.R.string.send_report))
+                    }
+                }
 
         }
 
     }
-    )
-}
+
+
 
 @Composable
 fun BottomApp(modifier: Modifier = Modifier){
@@ -76,38 +88,63 @@ fun BottomApp(modifier: Modifier = Modifier){
 }
 @Composable
 fun ReportInfoCard() {
-        Card(
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+
+            Image(
+                painter = painterResource(id = android.R.drawable.ic_menu_gallery), // Predvolený obrázok, nahraď svojím riešením
+                contentDescription = "Foto incidentu",
+
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Názov obrázka alebo popis",
+                textAlign = TextAlign.Start,
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Ďalší detailný popis k obrázku, ktorý sa môže rozprestierať na viacero riadkov.",
+                textAlign = TextAlign.Center,
+                fontSize = 14.sp
+            )
+            TextField(
+                value = "",
+                shape = shapes.large,
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = {},
+                label = {
+                    Text(text = stringResource(com.example.hitmonitoring.R.string.enter_description))
+                }
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {}
             ) {
-                // Miesto pre obrázok
-                Image(
-                    painter = painterResource(id = android.R.drawable.ic_menu_gallery), // Predvolený obrázok, nahraď svojím riešením
-                    contentDescription = "Foto incidentu",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Názov obrázka alebo popis",
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Ďalší detailný popis k obrázku, ktorý sa môže rozprestierať na viacero riadkov.",
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                )
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(com.example.hitmonitoring.R.drawable.baseline_add_a_photo_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .size(dimensionResource(com.example.hitmonitoring.R.dimen.icon_size))
+                    )
+                }
+                Text(stringResource(com.example.hitmonitoring.R.string.make_photo))
             }
         }
 
+    }
 }
 
 
@@ -116,6 +153,6 @@ fun ReportInfoCard() {
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable
 fun ImageCardScreenPreview() {
-    ReportInfoCard()
+    ReportScreen()
 }
 

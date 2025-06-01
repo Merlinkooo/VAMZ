@@ -1,9 +1,8 @@
 package com.example.hitmonitoring
 
 
-import MainScreen
-import ReportInfoCard
-import ReportScreen
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hitmonitoring.ui.ConfirmationScreen
-import com.example.hitmonitoring.ui.ScreenAfterNFCScan
-
+import com.example.hitmonitoring.HitMonitorinScreen
 
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 
@@ -29,9 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HitMonitoringTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = Color.Gray) {
-                    MainScreen()
-                }
+                HitMonitoringScreen()
             }
         }
     }
@@ -43,6 +39,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     HitMonitoringTheme {
-        Surface { MainScreen() }
+
     }
 }

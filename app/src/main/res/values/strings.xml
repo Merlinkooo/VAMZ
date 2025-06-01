@@ -3,4 +3,9 @@
     <string name="back_to_main_screen">Návrat na hlavnú obrazovku</string>
     <string name="report_sended">Report bol odoslaný</string>
     <string name="identify_problem">Diagnostikovať problém</string>
+    <string name="signed">Prihlásený</string>
+    <string name="last_check">Posledná kontrola</string>
+    <string name="enter_description">Vlož popis</string>
+    <string name="make_photo">Odfoť</string>
+    <string name="send_report">Poslať</string>
 </resources>
