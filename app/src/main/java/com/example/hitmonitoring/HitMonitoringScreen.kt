@@ -160,6 +160,6 @@ fun HitMonitoringScreen(
 @Composable
 fun HitMonitoringScreenPreview(){
     HitMonitoringTheme {
-        HitMonitoringScreen()
+        HitMonitoringScreen(navController = rememberNavController())
     }
 }

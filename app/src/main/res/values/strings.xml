@@ -8,4 +8,5 @@
     <string name="enter_description">Vlož popis</string>
     <string name="make_photo">Odfoť</string>
     <string name="send_report">Poslať</string>
+    <string name="control_done">Vykonaná kontrola</string>
 </resources>

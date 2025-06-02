@@ -3,6 +3,7 @@ package com.example.hitmonitoring.ui
 import android.os.Build.VERSION_CODES.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.List
@@ -47,11 +48,14 @@ fun ReportScreen(){
             ) {
 
                 ReportInfoCard()
-                IconButton(onClick = {}) {
-                    Row {
-                        Icon(
+                Spacer(modifier = Modifier.padding(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
+                Button (onClick = {},
+                    modifier = Modifier.fillMaxWidth()
+                    ) {
+                    Icon(
                             imageVector = Icons.AutoMirrored.Sharp.Send,
-                            contentDescription = null
+                            contentDescription = null,
+
                         )
                         Text(text = stringResource(com.example.hitmonitoring.R.string.send_report))
                     }
@@ -59,7 +63,7 @@ fun ReportScreen(){
 
         }
 
-    }
+
 
 
 
@@ -131,7 +135,7 @@ fun ReportInfoCard() {
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {}
             ) {
-                IconButton(onClick = {}) {
+
                     Icon(
                         painter = painterResource(com.example.hitmonitoring.R.drawable.baseline_add_a_photo_24),
                         contentDescription = null,
@@ -139,7 +143,7 @@ fun ReportInfoCard() {
                             .padding(end = 12.dp)
                             .size(dimensionResource(com.example.hitmonitoring.R.dimen.icon_size))
                     )
-                }
+
                 Text(stringResource(com.example.hitmonitoring.R.string.make_photo))
             }
         }
