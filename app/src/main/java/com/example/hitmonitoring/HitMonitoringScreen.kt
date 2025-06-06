@@ -39,7 +39,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.hitmonitoring.data.Control
 import com.example.hitmonitoring.ui.AppViewModel
+import com.example.hitmonitoring.ui.ConfirmationScreen
 import com.example.hitmonitoring.ui.MainScreen
+import com.example.hitmonitoring.ui.ReportScreen
+import com.example.hitmonitoring.ui.ScreenAfterNFCScan
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 
 
@@ -122,6 +125,7 @@ fun HitMonitoringScreen(
     viewModel: AppViewModel = AppViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+    val appUiStat by viewModel.uiState.collectAsState()
     Scaffold (
         topBar = {
             HitMonitoringTopAppBar(
@@ -140,7 +144,7 @@ fun HitMonitoringScreen(
         ) {
             composable(route = HitMonitorinScreen.Main.name){
                 MainScreen(
-                        nameOfTheGuard = "Mike Madison",
+                        nameOfTheGuard = "view",
                         lastControl = Control(
                             nameOfTheObject = "Office no.6",
                             timeOfControl = "08:46:34",
@@ -149,8 +153,17 @@ fun HitMonitoringScreen(
                     )
             }
             composable(route = HitMonitorinScreen.Scan.name) {
-
+                ScreenAfterNFCScan(uiState.lastControl)
             }
+
+            composable(route = HitMonitorinScreen.Report.name) {
+                ReportScreen()
+            }
+
+            composable(route = HitMonitorinScreen.Confirmation.name) {
+                ConfirmationScreen()
+            }
+
 
         }
     }
