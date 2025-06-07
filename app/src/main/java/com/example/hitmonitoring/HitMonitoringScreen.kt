@@ -38,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hitmonitoring.data.Control
 import com.example.hitmonitoring.ui.AppViewModel
@@ -73,7 +74,7 @@ fun HitMonitoringTopAppBar(
         ),
         navigationIcon = {
             if (!isInMainScreen) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = navigateTo) {
                     Icon(
                         Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = stringResource(R.string.back_to_main_screen)
@@ -128,6 +129,9 @@ fun HitMonitoringScreen(
     navController: NavHostController = rememberNavController()
 ) {
     val appUiState by viewModel.uiState.collectAsState()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
 
     LaunchedEffect(appUiState.newObjectDetected) {
         if (appUiState.newObjectDetected) {
@@ -140,9 +144,12 @@ fun HitMonitoringScreen(
     Scaffold (
         topBar = {
             HitMonitoringTopAppBar(
-                isInMainScreen = true,
+                isInMainScreen = currentRoute == HitMonitorinScreen.Main.name,
                 allFunctionalityWorks = true,
-                navigateTo = {}
+                navigateTo = {
+                    if (navController.previousBackStackEntry != null) {
+                    navController.popBackStack()
+                }}
             )
         }
     ) { paddingValues ->

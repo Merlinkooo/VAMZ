@@ -101,7 +101,7 @@ fun MainScreen(
             color = Color.Black
         )
         Info(
-            nameOfTheGuard = " Mike Madison",
+            nameOfTheGuard = nameOfTheGuard,
             control = lastControl,
             modifier = Modifier
                 .wrapContentSize()
