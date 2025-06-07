@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -24,27 +25,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.hitmonitoring.ui.ConfirmationScreen
 import com.example.hitmonitoring.HitMonitorinScreen
+import com.example.hitmonitoring.ui.AppViewModel
 
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 
 class MainActivity : ComponentActivity() {
 
-    private var nfcAdapter: NfcAdapter? = null;
+    private var nfcAdapter: NfcAdapter? = null
+    private val viewModel: AppViewModel by viewModels()
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+
         setContent {
-            val navController = rememberNavController()
+            navController = rememberNavController()
             HitMonitoringTheme {
-                HitMonitoringScreen(navController = navController)
+                HitMonitoringScreen(
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
         }
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
 
     }
 
@@ -83,6 +95,8 @@ class MainActivity : ComponentActivity() {
                 val hexId = id.joinToString("") { byte -> "%02x".format(byte) }
                 Log.d("NFC", "Tag ID: $hexId")
                 Toast.makeText(this, "NFC tag ID: $hexId", Toast.LENGTH_LONG).show()
+                viewModel.getTagInfo(hexId)
+
             }
         }
     }

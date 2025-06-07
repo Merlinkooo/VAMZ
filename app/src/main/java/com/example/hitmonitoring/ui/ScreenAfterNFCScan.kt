@@ -45,7 +45,7 @@ import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
-fun ScreenAfterNFCScan(control: Control, modifier: Modifier){
+fun ScreenAfterNFCScan(control: Control, modifier: Modifier = Modifier){
 
     Column(
                 modifier = Modifier,

@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -122,10 +124,19 @@ fun HitMonitoringTopAppBar(
 
 @Composable
 fun HitMonitoringScreen(
-    viewModel: AppViewModel = AppViewModel(),
+    viewModel: AppViewModel,
     navController: NavHostController = rememberNavController()
 ) {
-    val appUiStat by viewModel.uiState.collectAsState()
+    val appUiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(appUiState.newObjectDetected) {
+        if (appUiState.newObjectDetected) {
+            navController.navigate(HitMonitorinScreen.Scan.name)
+            viewModel.clearNewObjectDetected()
+        }
+    }
+
+
     Scaffold (
         topBar = {
             HitMonitoringTopAppBar(
@@ -136,7 +147,7 @@ fun HitMonitoringScreen(
         }
     ) { paddingValues ->
 
-        val uiState by viewModel.uiState.collectAsState()
+
         NavHost(
             navController = navController,
             startDestination = HitMonitorinScreen.Main.name,
@@ -144,16 +155,12 @@ fun HitMonitoringScreen(
         ) {
             composable(route = HitMonitorinScreen.Main.name){
                 MainScreen(
-                        nameOfTheGuard = "view",
-                        lastControl = Control(
-                            nameOfTheObject = "Office no.6",
-                            timeOfControl = "08:46:34",
-                            gpsCoordinations = " 98.73 , 73.79"
-                        )
+                        nameOfTheGuard = appUiState.nameOfGuard,
+                        lastControl = appUiState.lastControl
                     )
             }
             composable(route = HitMonitorinScreen.Scan.name) {
-                ScreenAfterNFCScan(uiState.lastControl)
+                ScreenAfterNFCScan(appUiState.lastControl)
             }
 
             composable(route = HitMonitorinScreen.Report.name) {
@@ -173,6 +180,6 @@ fun HitMonitoringScreen(
 @Composable
 fun HitMonitoringScreenPreview(){
     HitMonitoringTheme {
-        HitMonitoringScreen(navController = rememberNavController())
+        HitMonitoringScreen(viewModel = viewModel(),navController = rememberNavController())
     }
 }

@@ -29,15 +29,8 @@ import androidx.compose.ui.unit.sp
 import com.example.hitmonitoring.R
 
 @Composable
-fun ConfirmationScreen(reportSended: Boolean) {
-    HitMonitoringTheme {
-        Surface( modifier = Modifier.fillMaxSize(),
-                ) {
-            Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                if (reportSended) {
+fun ConfirmationScreen(modifier : Modifier = Modifier) {
+
                     Column(
                         modifier = Modifier
                             .wrapContentSize(),
@@ -56,20 +49,12 @@ fun ConfirmationScreen(reportSended: Boolean) {
                         )
                     }
 
-                } else {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(70.dp),
-                        color = Color.Blue
-                    )
-                }
-            }
-        }
-    }
 
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun ConfirmationScreenPreview(){
-    ConfirmationScreen(true)
+    ConfirmationScreen()
 }
