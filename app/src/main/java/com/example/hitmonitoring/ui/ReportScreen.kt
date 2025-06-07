@@ -1,31 +1,22 @@
 package com.example.hitmonitoring.ui
 
-import android.os.Build.VERSION_CODES.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.Send
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.R
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -33,8 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
-
 
 
 @Composable
@@ -70,19 +59,19 @@ fun ReportScreen(){
 @Composable
 fun BottomApp(modifier: Modifier = Modifier){
     BottomAppBar(modifier = modifier) {
-        BottomAppBarButton(
+        HitMonitoringButton(
             icon = Icons.Filled.Edit,
             buttonDescription = "Text",
             onClick = {},
             Modifier.weight(1f).padding(2.dp)
         )
-        BottomAppBarButton(
+        HitMonitoringButton(
             Icons.Default.Warning,
             buttonDescription = "Foto",
             onClick = {},
             Modifier.weight(1f).padding(2.dp)
         )
-        BottomAppBarButton(
+        HitMonitoringButton(
             Icons.AutoMirrored.Sharp.Send,
             buttonDescription = "Pošli",
             onClick = {},

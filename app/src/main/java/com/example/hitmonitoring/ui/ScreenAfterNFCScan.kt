@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -45,39 +46,34 @@ import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
-fun ScreenAfterNFCScan(control: Control, modifier: Modifier = Modifier){
+fun ScreenAfterNFCScan(control: Control, modifier: Modifier = Modifier) {
 
     Column(
-                modifier = Modifier,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        modifier = modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-                ControlCheckInfo(
-                    control,
-                    Modifier.padding(dimensionResource(R.dimen.main_padding)).
-                    align(Alignment.CenterHorizontally))
+        ControlCheckInfo(
+            control,
+            modifier = Modifier
+                .padding(top = dimensionResource(R.dimen.big_padding))
+                .padding(dimensionResource(R.dimen.main_padding))
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        )
 
-                LargeFloatingActionButton(
-                    onClick = {},
-                    content = {
-                        Column {
-                            Icon(
-                                Icons.Default.Warning,
-                                "Vytvor report",
-                                modifier = Modifier
-                                    .scale(2f)
-                                    .align(Alignment.CenterHorizontally)
-                                    .padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = "Report",
-                                textAlign = TextAlign.Center)
-                        }
-                    }
-                )
-            }
-        }
 
+        HitMonitoringButton(
+            icon = Icons.Default.Warning,
+            buttonDescription = stringResource(R.string.make_report),
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+
+    }
+}
 
 
 
@@ -104,15 +100,16 @@ fun ControlCheckInfo(control: Control, modifier: Modifier = Modifier){
 
         Row() {
             Icon(
-                imageVector = Icons.Filled.CheckCircle,
+                imageVector = Icons.Default.Done,
                 contentDescription = null,
-                modifier = Modifier.height(24.dp).width(24.dp)
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.icon_size))
+                    .padding(end = dimensionResource(R.dimen.main_padding))
             )
             Text(
                 text = control.nameOfTheObject,
                 fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(12.dp)
+                textAlign = TextAlign.Start
             )
         }
 
@@ -122,9 +119,9 @@ fun ControlCheckInfo(control: Control, modifier: Modifier = Modifier){
                 contentDescription = null
             )
             Text(
-                text = control.nameOfTheObject,
+                text = control.timeOfControl,
                 fontSize = 24.sp,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.padding(12.dp)
             )
         }
