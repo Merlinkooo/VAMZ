@@ -14,30 +14,38 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AppViewModel: ViewModel() {
 
     private val _uiState = MutableStateFlow(AppUIState())
+
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
 
     fun getTagInfo(uid: String ) {
         viewModelScope.launch {
             try {
                 val uidToSend = uid.uppercase()
+
+                val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
                 val response = HitMonitoringApi.retrofitService.getNfcTagInfo(uidToSend)
 
-                Log.d("Name of the object:" ,"${response.tagName}")
+
 
                 _uiState.update {
 
                     if(response.tagType == 1) {
+                        Log.d("UI_STATE_UPDATE", "Previous State: ")
                         it.copy(nameOfGuard = response.tagName)
                     } else{
+                        Log.d("UI_STATE_UPDATE", "Previous State:")
                         it.copy(
                             lastControl = Control(
                                 nameOfTheObject = response.tagName,
-                                timeOfControl = ""),
-                            newObjectDetected = true
+                                timeOfControl = currentTime),
+                                newObjectDetected = true
                         )
 
                     }

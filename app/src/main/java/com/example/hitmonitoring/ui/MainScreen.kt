@@ -86,20 +86,14 @@ fun MainScreen(
     modifier : Modifier = Modifier) {
     val mainPadding = dimensionResource(R.dimen.main_padding)
     Column(
-        modifier = Modifier
+        modifier = modifier
         .statusBarsPadding()
         .verticalScroll(rememberScrollState())
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(elevation = 5.dp, shape = MaterialTheme.shapes.large),
-            thickness = dimensionResource(R.dimen.line_thicknes),
-            color = Color.Black
-        )
+
         Info(
             nameOfTheGuard = nameOfTheGuard,
             control = lastControl,
