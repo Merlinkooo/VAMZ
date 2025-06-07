@@ -23,7 +23,11 @@ class AppViewModel: ViewModel() {
     fun getTagInfo(uid: String ) {
         viewModelScope.launch {
             try {
-                val response = HitMonitoringApi.retrofitService.getNfcTagInfo(uid)
+                val uidToSend = uid.uppercase()
+                val response = HitMonitoringApi.retrofitService.getNfcTagInfo(uidToSend)
+
+                Log.d("Name of the object:" ,"${response.tagName}")
+
                 _uiState.update {
 
                     if(response.tagType == 1) {
