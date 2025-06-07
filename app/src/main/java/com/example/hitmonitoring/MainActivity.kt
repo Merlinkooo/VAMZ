@@ -2,9 +2,11 @@ package com.example.hitmonitoring
 
 
 
-
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.NfcA
@@ -15,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -33,19 +37,24 @@ import com.example.hitmonitoring.HitMonitorinScreen
 import com.example.hitmonitoring.ui.AppViewModel
 
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class MainActivity : ComponentActivity() {
 
     private var nfcAdapter: NfcAdapter? = null
     private val viewModel: AppViewModel by viewModels()
     private lateinit var navController: NavHostController
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContent {
             navController = rememberNavController()
@@ -76,6 +85,11 @@ class MainActivity : ComponentActivity() {
         nfcAdapter?.disableForegroundDispatch(this)
     }
 
+
+
+
+
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
@@ -95,9 +109,31 @@ class MainActivity : ComponentActivity() {
                 val hexId = id.joinToString("") { byte -> "%02x".format(byte) }
                 Log.d("NFC", "Tag ID: $hexId")
                 Toast.makeText(this, "NFC tag ID: $hexId", Toast.LENGTH_LONG).show()
+                getLocation()
                 viewModel.getTagInfo(hexId)
 
             }
+        }
+    }
+
+    private fun getLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        val latitude = it.latitude
+                        val longitude = it.longitude
+                        Log.d("LOCATION", "Latitude: $latitude, Longitude: $longitude")
+
+                    } ?: run {
+                        Log.e("LOCATION", "Last known location is null.")
+
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("LOCATION", "Error getting location: ${e.message}", e)
+
+                }
         }
     }
 }
