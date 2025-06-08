@@ -20,6 +20,9 @@ private val retrofit = Retrofit.Builder()
 interface HitMonitoringApiService{
     @GET("testApi.php")
     suspend fun getNfcTagInfo(@Query("q") tagId: String) : NFCTag
+
+    @GET("testApi.php")
+    suspend fun getConnectionStatus(@Query("q") tagId: String="status") : NFCTag
 }
 
 object HitMonitoringApi {

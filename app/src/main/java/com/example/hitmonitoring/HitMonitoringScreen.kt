@@ -145,7 +145,7 @@ fun HitMonitoringScreen(
         topBar = {
             HitMonitoringTopAppBar(
                 isInMainScreen = currentRoute == HitMonitorinScreen.Main.name,
-                allFunctionalityWorks = true,
+                allFunctionalityWorks = viewModel.isOnline.collectAsState().value,
                 navigateTo = {
                     if (navController.previousBackStackEntry != null) {
                     navController.popBackStack()

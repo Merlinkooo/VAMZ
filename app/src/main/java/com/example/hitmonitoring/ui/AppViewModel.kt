@@ -23,6 +23,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.delay
 
 class AppViewModel: ViewModel() {
 
@@ -30,11 +31,26 @@ class AppViewModel: ViewModel() {
 
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
 
+    private val _isOnline = MutableStateFlow(true)
+    val isOnline = _isOnline.asStateFlow()
 
+    init {
+        startMonitoring()
+    }
 
-
-
-
+    private fun startMonitoring() {
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    HitMonitoringApi.retrofitService.getConnectionStatus()
+                    _isOnline.value = true
+                } catch (e: Exception) {
+                    _isOnline.value = false
+                }
+                delay(30000)
+            }
+        }
+    }
 
     fun getTagInfo(uid: String ) {
         viewModelScope.launch {

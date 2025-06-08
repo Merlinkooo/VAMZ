@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.Send
@@ -35,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import java.io.File
@@ -86,7 +88,10 @@ fun ReportScreen(
                     onValueChange = onDescriptionChanged,
                     label = {
                         Text(text = stringResource(com.example.hitmonitoring.R.string.enter_description))
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
                 Button(
@@ -144,7 +149,7 @@ fun ReportInfoCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (imageUri != null) {
+            if (imageUri != Uri.EMPTY) {
                 AsyncImage(
                     model = imageUri,
                     contentDescription = "Foto incidentu",
