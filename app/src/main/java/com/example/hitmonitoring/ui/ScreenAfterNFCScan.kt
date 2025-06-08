@@ -5,6 +5,7 @@ import android.graphics.Paint.Align
 import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +15,11 @@ import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Done
@@ -50,7 +55,10 @@ fun ScreenAfterNFCScan(control: Control, modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize()
+            ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -90,40 +98,64 @@ fun ControlCheckInfo(control: Control, modifier: Modifier = Modifier){
     ) {
 
 
-        Text(
-            text = stringResource(R.string.control_done),
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(dimensionResource(R.dimen.main_padding))
-        )
-
-        Row() {
-            Icon(
-                imageVector = Icons.Default.Done,
-                contentDescription = null,
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(top = dimensionResource(R.dimen.main_padding)),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.control_done),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Row(
                 modifier = Modifier
-                    .size(dimensionResource(R.dimen.icon_size))
-                    .padding(end = dimensionResource(R.dimen.main_padding))
-            )
-            Text(
-                text = control.nameOfTheObject,
-                fontSize = 24.sp,
-                textAlign = TextAlign.Start
-            )
-        }
-
-        Row() {
-            Icon(
-                painter = painterResource(R.drawable.baseline_access_time_filled_24),
-                contentDescription = null
-            )
-            Text(
-                text = control.timeOfControl,
-                fontSize = 24.sp,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(12.dp)
-            )
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.main_padding)),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Done,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = dimensionResource(R.dimen.main_padding))
+                        .size(dimensionResource(R.dimen.icon_size))
+                )
+                Text(
+                    text = control?.nameOfTheObject ?: "",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Start
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.main_padding)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start // Aligned to start
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_access_time_filled_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .size(dimensionResource(R.dimen.icon_size))
+                )
+                Text(
+                    text = control?.timeOfControl ?: "",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Start
+                )
+            }
         }
 
 

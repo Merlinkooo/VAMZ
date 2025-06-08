@@ -47,6 +47,7 @@ import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 fun MainScreen(
     nameOfTheGuard: String,
     lastControl: Control?,
+    onReportButtonClicked : () -> Unit,
     modifier : Modifier = Modifier) {
     val mainPadding = dimensionResource(R.dimen.main_padding)
     Column(
@@ -83,7 +84,7 @@ fun MainScreen(
                 HitMonitoringButton(
                     icon = Icons.Default.Warning,
                     buttonDescription = "Incident",
-                    onClick = {},
+                    onClick = onReportButtonClicked,
                     modifier = Modifier
                         .padding(dimensionResource(R.dimen.small_padding))
                         .fillMaxWidth()
@@ -132,7 +133,7 @@ fun Info(nameOfTheGuard: String,
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(end = 12.dp)
+                        .padding(end = dimensionResource(R.dimen.main_padding))
                         .size(dimensionResource(R.dimen.icon_size))
                 )
                 Text(
@@ -151,12 +152,15 @@ fun Info(nameOfTheGuard: String,
         )
         // Last Control Info
         Column(
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(top = dimensionResource(R.dimen.main_padding)),
             horizontalAlignment = Alignment.Start
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(R.string.last_check),
@@ -169,13 +173,14 @@ fun Info(nameOfTheGuard: String,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.main_padding)),
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Default.Done,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(end = 12.dp)
+                        .padding(end = dimensionResource(R.dimen.main_padding))
                         .size(dimensionResource(R.dimen.icon_size))
                 )
                 Text(
@@ -235,7 +240,8 @@ fun MainScreenPreview() {
               nameOfTheObject = "Office no.6",
               timeOfControl = "08:46:34",
               gpsCoordinations = " 98.73 , 73.79"
-          )
+          ),
+          {}
       )
   }
 }

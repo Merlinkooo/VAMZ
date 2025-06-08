@@ -163,7 +163,8 @@ fun HitMonitoringScreen(
             composable(route = HitMonitorinScreen.Main.name){
                 MainScreen(
                         nameOfTheGuard = appUiState.nameOfGuard,
-                        lastControl = appUiState.lastControl
+                        lastControl = appUiState.lastControl,
+                        onReportButtonClicked = {navController.navigate(HitMonitorinScreen.Report.name)}
                     )
             }
             composable(route = HitMonitorinScreen.Scan.name) {
@@ -171,7 +172,10 @@ fun HitMonitoringScreen(
             }
 
             composable(route = HitMonitorinScreen.Report.name) {
-                ReportScreen()
+                ReportScreen(
+                    viewModel,
+                    {newText -> viewModel.updateIncidentDescription(newText) }
+                    )
             }
 
             composable(route = HitMonitorinScreen.Confirmation.name) {

@@ -1,5 +1,6 @@
 package com.example.hitmonitoring.ui
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 
@@ -15,6 +16,7 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -24,10 +26,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 
 @Composable
-fun ReportScreen(){
+fun ReportScreen(
+    viewModel: AppViewModel = viewModel(),
+    onDescriptionChanged : (String) -> Unit
+    ){
+
+    val incidentDescription by viewModel.incidentDescription.collectAsState()
 
             Column(
                 modifier = Modifier
@@ -36,18 +44,44 @@ fun ReportScreen(){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                ReportInfoCard()
+                ReportInfoCard(incidentDescription,null)
                 Spacer(modifier = Modifier.padding(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
-                Button (onClick = {},
-                    modifier = Modifier.fillMaxWidth()
-                    ) {
-                    Icon(
-                            imageVector = Icons.AutoMirrored.Sharp.Send,
-                            contentDescription = null,
 
-                        )
-                        Text(text = stringResource(com.example.hitmonitoring.R.string.send_report))
+
+                TextField(
+                    value = incidentDescription,
+                    shape = shapes.large,
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = onDescriptionChanged,
+                    label = {
+                        Text(text = stringResource(com.example.hitmonitoring.R.string.enter_description))
                     }
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {}
+                ) {
+
+                    Icon(
+                        painter = painterResource(com.example.hitmonitoring.R.drawable.baseline_add_a_photo_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .size(dimensionResource(com.example.hitmonitoring.R.dimen.icon_size))
+                    )
+
+                    Text(stringResource(com.example.hitmonitoring.R.string.make_photo))
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
+
+                HitMonitoringButton(
+                    icon = Icons.AutoMirrored.Sharp.Send,
+                    buttonDescription = stringResource(com.example.hitmonitoring.R.string.send_report),
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth()
+                )
+
                 }
 
         }
@@ -56,31 +90,12 @@ fun ReportScreen(){
 
 
 
+
 @Composable
-fun BottomApp(modifier: Modifier = Modifier){
-    BottomAppBar(modifier = modifier) {
-        HitMonitoringButton(
-            icon = Icons.Filled.Edit,
-            buttonDescription = "Text",
-            onClick = {},
-            Modifier.weight(1f).padding(2.dp)
-        )
-        HitMonitoringButton(
-            Icons.Default.Warning,
-            buttonDescription = "Foto",
-            onClick = {},
-            Modifier.weight(1f).padding(2.dp)
-        )
-        HitMonitoringButton(
-            Icons.AutoMirrored.Sharp.Send,
-            buttonDescription = "Pošli",
-            onClick = {},
-            Modifier.weight(1f).padding(2.dp)
-        )
-    }
-}
-@Composable
-fun ReportInfoCard() {
+fun ReportInfoCard(
+    incidentDescription : String,
+    imageUri: Uri?
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,49 +107,38 @@ fun ReportInfoCard() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Image(
-                painter = painterResource(id = android.R.drawable.ic_menu_gallery), // Predvolený obrázok, nahraď svojím riešením
-                contentDescription = "Foto incidentu",
+            if (imageUri != null) {
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "Foto incidentu",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = android.R.drawable.ic_menu_gallery),
+                    contentDescription = "Foto incidentu",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
 
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Názov obrázka alebo popis",
-                textAlign = TextAlign.Start,
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Ďalší detailný popis k obrázku, ktorý sa môže rozprestierať na viacero riadkov.",
+                text = incidentDescription,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp
             )
-            TextField(
-                value = "",
-                shape = shapes.large,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {},
-                label = {
-                    Text(text = stringResource(com.example.hitmonitoring.R.string.enter_description))
-                }
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {}
-            ) {
 
-                    Icon(
-                        painter = painterResource(com.example.hitmonitoring.R.drawable.baseline_add_a_photo_24),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(end = 12.dp)
-                            .size(dimensionResource(com.example.hitmonitoring.R.dimen.icon_size))
-                    )
 
-                Text(stringResource(com.example.hitmonitoring.R.string.make_photo))
-            }
+
+
+
+
         }
 
     }
@@ -146,6 +150,6 @@ fun ReportInfoCard() {
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable
 fun ImageCardScreenPreview() {
-    ReportScreen()
+    ReportScreen(viewModel = viewModel(), { })
 }
 

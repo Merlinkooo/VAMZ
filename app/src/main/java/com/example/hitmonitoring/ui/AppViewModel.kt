@@ -1,6 +1,8 @@
 package com.example.hitmonitoring.ui
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hitmonitoring.HitMonitorinScreen
@@ -23,6 +25,14 @@ class AppViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(AppUIState())
 
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
+
+    private val _incidentDescription = MutableStateFlow("")
+    val incidentDescription: StateFlow<String> = _incidentDescription.asStateFlow()
+
+
+    fun updateIncidentDescription(description: String) {
+        _incidentDescription.value = description
+    }
 
     fun getTagInfo(uid: String ) {
         viewModelScope.launch {
