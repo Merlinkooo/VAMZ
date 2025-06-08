@@ -1,6 +1,9 @@
 package com.example.hitmonitoring.ui
 
+import android.content.Context
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 
@@ -28,6 +31,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
+import coil.compose.AsyncImage
+import java.io.File
+
+
+
+
 
 @Composable
 fun ReportScreen(
@@ -35,8 +49,25 @@ fun ReportScreen(
     onDescriptionChanged : (String) -> Unit
     ){
 
-    val incidentDescription by viewModel.incidentDescription.collectAsState()
+        val appUiState by viewModel.uiState.collectAsState()
+        var imageUri = appUiState.imageUri
+        val incidentDescription = appUiState.incidentDescription
 
+    val context = LocalContext.current
+
+        // Launcher pre spustenie aktivity fotoaparátu
+            val cameraLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.TakePicture(),
+            onResult = { success ->
+                if (success) {
+                    viewModel.uploadPhoto(imageUri)
+
+                } else {
+
+                }
+
+            }
+        )
             Column(
                 modifier = Modifier
                     .padding(16.dp)
@@ -44,7 +75,7 @@ fun ReportScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                ReportInfoCard(incidentDescription,null)
+                ReportInfoCard(incidentDescription,imageUri)
                 Spacer(modifier = Modifier.padding(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
 
 
@@ -60,7 +91,13 @@ fun ReportScreen(
                 Spacer(modifier = Modifier.height(dimensionResource(com.example.hitmonitoring.R.dimen.main_padding)))
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
+                    onClick = {
+
+                            val uri = createImageUri(context)
+                            imageUri = uri
+                            cameraLauncher.launch(uri)
+
+                    }
                 ) {
 
                     Icon(
@@ -145,7 +182,14 @@ fun ReportInfoCard(
 }
 
 
-
+fun createImageUri(context: Context): Uri {
+    val imageFile = File.createTempFile("incident_", ".jpg", context.cacheDir)
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.provider", // v build.gradle: authorities
+        imageFile
+    )
+}
 
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable

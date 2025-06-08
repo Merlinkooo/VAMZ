@@ -1,8 +1,11 @@
 package com.example.hitmonitoring.ui
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hitmonitoring.HitMonitorinScreen
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -26,13 +30,11 @@ class AppViewModel: ViewModel() {
 
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
 
-    private val _incidentDescription = MutableStateFlow("")
-    val incidentDescription: StateFlow<String> = _incidentDescription.asStateFlow()
 
 
-    fun updateIncidentDescription(description: String) {
-        _incidentDescription.value = description
-    }
+
+
+
 
     fun getTagInfo(uid: String ) {
         viewModelScope.launch {
@@ -66,6 +68,23 @@ class AppViewModel: ViewModel() {
             } catch (e: HttpException) {
                 Log.e("API_ERROR", "Error: ${e.localizedMessage}")
             }
+        }
+    }
+
+    fun eraseImageUri() {
+        _uiState.update { currentState ->
+            currentState.copy(imageUri = Uri.EMPTY)
+        }
+    }
+
+    fun updateIncidentDescription(description: String) {
+        _uiState.update { currentState ->
+            currentState.copy(incidentDescription = description)
+        }
+    }
+    fun uploadPhoto(uri: Uri) {
+        _uiState.update { currentState ->
+            currentState.copy(imageUri = uri)
         }
     }
 
