@@ -10,4 +10,6 @@
     <string name="send_report">Poslať</string>
     <string name="control_done">Vykonaná kontrola</string>
     <string name="make_report">Vytvor report</string>
+    <string name="internet_connection_missing">Chýba internetové pripojenie</string>
+    <string name="server_not_responding">Server neodpovedá</string>
 </resources>

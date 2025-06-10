@@ -3,15 +3,23 @@ package com.example.hitmonitoring.ui
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hitmonitoring.HitMonitorinScreen
+import com.example.hitmonitoring.R
 import com.example.hitmonitoring.data.AppUIState
 import com.example.hitmonitoring.data.Control
+import com.example.hitmonitoring.network.ConnectionStatus
 import com.example.hitmonitoring.network.HitMonitoringApi
+import com.example.hitmonitoring.network.checkServerConnection
+import com.example.hitmonitoring.network.isInternetAvailable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,8 +39,10 @@ class AppViewModel: ViewModel() {
 
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
 
-    private val _isOnline = MutableStateFlow(true)
+    private val _isOnline = MutableStateFlow(ConnectionStatus.CONNECTED)
     val isOnline = _isOnline.asStateFlow()
+
+
 
     init {
         startMonitoring()
@@ -41,13 +51,21 @@ class AppViewModel: ViewModel() {
     private fun startMonitoring() {
         viewModelScope.launch {
             while (true) {
-                try {
-                    HitMonitoringApi.retrofitService.getConnectionStatus()
-                    _isOnline.value = true
-                } catch (e: Exception) {
-                    _isOnline.value = false
-                }
+                _isOnline.value =  if (checkServerConnection())  ConnectionStatus.CONNECTED else ConnectionStatus.SERVER_ERROR
                 delay(30000)
+            }
+        }
+    }
+
+    @RequiresPermission(value = "android. permission. ACCESS_NETWORK_STATE")
+     fun diagnoseConnection(context: Context)  {
+        viewModelScope.launch {
+            if (!isInternetAvailable(context)) {
+                _isOnline.value = ConnectionStatus.NO_INTERNET
+            } else if (!checkServerConnection()) {
+                _isOnline.value = ConnectionStatus.SERVER_ERROR
+            } else {
+                _isOnline.value = ConnectionStatus.CONNECTED
             }
         }
     }
