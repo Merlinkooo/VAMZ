@@ -3,14 +3,16 @@ package com.example.hitmonitoring
 
 import android.content.Context
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -45,7 +48,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.hitmonitoring.data.Control
 import com.example.hitmonitoring.network.ConnectionStatus
 import com.example.hitmonitoring.ui.AppViewModel
 import com.example.hitmonitoring.ui.ConfirmationScreen
@@ -53,7 +55,9 @@ import com.example.hitmonitoring.ui.MainScreen
 import com.example.hitmonitoring.ui.ReportScreen
 import com.example.hitmonitoring.ui.ScreenAfterNFCScan
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
-
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
 
 enum class HitMonitorinScreen {
     Main,
@@ -76,26 +80,12 @@ fun HitMonitoringTopAppBar(
     var showMenu by rememberSaveable { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
-    val connectionResult by viewModel.isOnline.collectAsState(ConnectionStatus.INITIAL)
+    val connectionStatus by viewModel.isOnline.collectAsState(ConnectionStatus.INITIAL)
 
     var showDiagnosisDialog by rememberSaveable { mutableStateOf(false) }
-    var dialogMessage by rememberSaveable { mutableStateOf("") }
+    
 
-    LaunchedEffect(connectionResult) {
-        if (connectionResult != ConnectionStatus.INITIAL) {
-            when (connectionResult) {
-                ConnectionStatus.NO_INTERNET -> {
-                    dialogMessage = context.getString(R.string.internet_connection_missing)
-                }
 
-                ConnectionStatus.SERVER_ERROR -> {
-                    dialogMessage = context.getString(R.string.internet_connection_missing)
-                }
-                else -> {}
-            }
-            if (dialogMessage.isNotEmpty()) showDiagnosisDialog = true
-        }
-    }
     TopAppBar(
         title = { Text(text = stringResource(R.string.app_name), textAlign = TextAlign.Start) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -143,7 +133,7 @@ fun HitMonitoringTopAppBar(
                 DropdownMenuItem(
                     onClick = {
                         viewModel.diagnoseConnection(context)
-
+                        showDiagnosisDialog = true
                         showMenu = false
                               },
                     text = { Text(stringResource(R.string.identify_problem)) }
@@ -155,19 +145,48 @@ fun HitMonitoringTopAppBar(
         }
     )
     if (showDiagnosisDialog) {
-        com.example.hitmonitoring.AlertDialog(dialogMessage)
+        ConnectivityDiagnoseDialog(connectionStatus = connectionStatus) {
+            showDiagnosisDialog = false
+        }
     }
 
 }
 
 @Composable
-fun AlertDialog(dialogMessage: String) {
+fun ConnectivityDiagnoseDialog(
+    connectionStatus: ConnectionStatus,
+    onDismissRequest: () -> Unit) {
     Dialog(
-        onDismissRequest = {}
+        onDismissRequest = onDismissRequest
     ) {
-        Text(text = dialogMessage)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = connectionStatus.description,
+                    modifier = Modifier.padding(16.dp),
+                )
+                TextButton(
+                    onClick = onDismissRequest,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = "Ok",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
+        }
     }
-
 }
 
 
