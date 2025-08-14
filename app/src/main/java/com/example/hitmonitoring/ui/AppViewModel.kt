@@ -12,10 +12,12 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
 import com.example.hitmonitoring.HitMonitorinScreen
 import com.example.hitmonitoring.R
 import com.example.hitmonitoring.data.AppUIState
 import com.example.hitmonitoring.data.Control
+import com.example.hitmonitoring.database.Database
 import com.example.hitmonitoring.network.ConnectionStatus
 import com.example.hitmonitoring.network.HitMonitoringApi
 import com.example.hitmonitoring.network.checkServerConnection
