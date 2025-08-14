@@ -78,13 +78,10 @@ fun HitMonitoringTopAppBar(
 ) {
 
     var showMenu by rememberSaveable { mutableStateOf(false) }
+    var showDiagnosisDialog by rememberSaveable { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
     val connectionStatus by viewModel.isOnline.collectAsState(ConnectionStatus.INITIAL)
-
-    var showDiagnosisDialog by rememberSaveable { mutableStateOf(false) }
-    
-
 
     TopAppBar(
         title = { Text(text = stringResource(R.string.app_name), textAlign = TextAlign.Start) },
