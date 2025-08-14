@@ -5,14 +5,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
+
 @Entity
-data class Report(
-    @PrimaryKey(autoGenerate = true) val id :Int=1,
-    @ColumnInfo(name = "id") val time: LocalDateTime,
+data class UnresolvedChecks(
+    @PrimaryKey(autoGenerate = true) val id: Int=1,
+    val time: LocalDateTime,
     @ColumnInfo(name = "guard_id") val guardID : String,
     val latitude: Double,
     val longitude: Double,
-    val tag: String,
+    val tag: String?,
 )
-
-

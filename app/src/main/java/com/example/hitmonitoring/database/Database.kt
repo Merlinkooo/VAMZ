@@ -29,6 +29,9 @@ object DatabaseProvider {
                 AppDatabase::class.java,
                 "database"
             ).build()
+
+
+
             INSTANCE = instance
             instance
         }

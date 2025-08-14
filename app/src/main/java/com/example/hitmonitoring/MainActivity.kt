@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,7 +36,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.hitmonitoring.ui.ConfirmationScreen
 import com.example.hitmonitoring.HitMonitorinScreen
-import com.example.hitmonitoring.database.Database
+import com.example.hitmonitoring.database.AppDatabase
+import com.example.hitmonitoring.database.DatabaseProvider
+import com.example.hitmonitoring.database.Entities.User
+
 import com.example.hitmonitoring.ui.AppViewModel
 
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
@@ -48,7 +52,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: AppViewModel by viewModels()
     private lateinit var navController: NavHostController
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private val appDatabase: AppDatabase = DatabaseProvider.getDatabase(this.baseContext)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +61,10 @@ class MainActivity : ComponentActivity() {
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        appDatabase.userDao().insertAll(
+            User("04930C82443686","Straznik ","1",),
+            User("044E884A443682","Straznik ", "2")
+            )
 
         setContent {
             navController = rememberNavController()
@@ -112,7 +120,7 @@ class MainActivity : ComponentActivity() {
                 Log.d("NFC", "Tag ID: $hexId")
                 Toast.makeText(this, "NFC tag ID: $hexId", Toast.LENGTH_LONG).show()
                 getLocation()
-                viewModel.getTagInfo(hexId)
+                viewModel.getTagInfo(hexId,this.baseContext)
 
             }
         }

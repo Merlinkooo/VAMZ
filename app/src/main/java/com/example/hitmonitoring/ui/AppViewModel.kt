@@ -17,7 +17,10 @@ import com.example.hitmonitoring.HitMonitorinScreen
 import com.example.hitmonitoring.R
 import com.example.hitmonitoring.data.AppUIState
 import com.example.hitmonitoring.data.Control
-import com.example.hitmonitoring.database.Database
+import com.example.hitmonitoring.database.AppDatabase
+import com.example.hitmonitoring.database.DatabaseProvider
+import com.example.hitmonitoring.database.Entities.Check
+import com.example.hitmonitoring.database.Entities.User
 import com.example.hitmonitoring.network.ConnectionStatus
 import com.example.hitmonitoring.network.HitMonitoringApi
 import com.example.hitmonitoring.network.checkServerConnection
@@ -72,7 +75,9 @@ class AppViewModel: ViewModel() {
         }
     }
 
-    fun getTagInfo(uid: String ) {
+    fun getTagInfo(uid: String , context: Context, database: AppDatabase) {
+        val appDatabase: AppDatabase = DatabaseProvider.getDatabase(context)
+
         viewModelScope.launch {
             try {
                 val uidToSend = uid.uppercase()
@@ -87,8 +92,10 @@ class AppViewModel: ViewModel() {
                     if(response.tagType == 1) {
                         Log.d("UI_STATE_UPDATE", "Previous State: ")
                         it.copy(nameOfGuard = response.tagName)
+
                     } else{
                         Log.d("UI_STATE_UPDATE", "Previous State:")
+                        appDatabase.checkDao().insertAll(Check(time=currentTime, guardID = _uiState.value))
                         it.copy(
                             lastControl = Control(
                                 nameOfTheObject = response.tagName,
@@ -99,9 +106,19 @@ class AppViewModel: ViewModel() {
                     }
 
                 }
+
+
             } catch (e: IOException) {
                 Log.e("API_ERROR", "Error: ${e.localizedMessage}")
+
             } catch (e: HttpException) {
+                val guard: User? = appDatabase.userDao().findByTag(uid)
+                if (guard !=null) {
+                    _uiState.update {
+                        it.copy(nameOfGuard = guard.firstName + " " + guard.lastName)
+                    }
+                }
+                DatabaseProvider.getDatabase(context)
                 Log.e("API_ERROR", "Error: ${e.localizedMessage}")
             }
         }

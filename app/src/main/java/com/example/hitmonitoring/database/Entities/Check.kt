@@ -7,11 +7,11 @@ import java.time.LocalDateTime
 
 @Entity
 data class Check(
-    @PrimaryKey(autoGenerate = true) val id: Int=1,
-    @ColumnInfo(name = "id") val time: LocalDateTime,
-    @ColumnInfo(name = "guard_id") val guardID : Int,
+    @PrimaryKey(autoGenerate = true) val tagId: Int=1,
+    val time: LocalDateTime,
+    @ColumnInfo(name = "guard_id") val guardID : String,
     val latitude: Double,
     val longitude: Double,
-    val tag: Int,
+    val tag: String,
 )
 
