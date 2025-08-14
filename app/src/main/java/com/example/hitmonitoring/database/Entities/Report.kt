@@ -1,9 +1,11 @@
 package com.example.hitmonitoring.database.Entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
+@Entity
 data class Report(
     @PrimaryKey(autoGenerate = true) val id :Int=1,
     @ColumnInfo(name = "id") val time: LocalDateTime,
