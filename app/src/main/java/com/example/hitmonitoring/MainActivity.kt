@@ -119,31 +119,34 @@ class MainActivity : ComponentActivity() {
                 val hexId = id.joinToString("") { byte -> "%02x".format(byte) }
                 Log.d("NFC", "Tag ID: $hexId")
                 Toast.makeText(this, "NFC tag ID: $hexId", Toast.LENGTH_LONG).show()
-                getLocation()
-                viewModel.getTagInfo(hexId,this.baseContext)
+
+                viewModel.getTagInfo(hexId,this.baseContext,appDatabase)
 
             }
         }
     }
 
-    private fun getLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+    private fun getLocation(onLocationResult: (Location?) -> Unit) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    location?.let {
-                        val latitude = it.latitude
-                        val longitude = it.longitude
-                        Log.d("LOCATION", "Latitude: $latitude, Longitude: $longitude")
-
-                    } ?: run {
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        Log.d("LOCATION", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+                    } else {
                         Log.e("LOCATION", "Last known location is null.")
-
                     }
+                    onLocationResult(location)
                 }
                 .addOnFailureListener { e ->
                     Log.e("LOCATION", "Error getting location: ${e.message}", e)
-
+                    onLocationResult(null)
                 }
+        } else {
+            onLocationResult(null)
         }
     }
 }

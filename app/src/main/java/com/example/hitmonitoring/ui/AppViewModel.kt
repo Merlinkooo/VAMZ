@@ -4,20 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
-import com.example.hitmonitoring.HitMonitorinScreen
-import com.example.hitmonitoring.R
-import com.example.hitmonitoring.data.AppUIState
-import com.example.hitmonitoring.data.Control
+import com.example.hitmonitoring.data.NetworkTagInfoRepository
+import com.example.hitmonitoring.ui.data.AppUIState
+import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.database.AppDatabase
+import com.example.hitmonitoring.database.Converters
 import com.example.hitmonitoring.database.DatabaseProvider
 import com.example.hitmonitoring.database.Entities.Check
 import com.example.hitmonitoring.database.Entities.User
@@ -31,7 +24,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -40,6 +32,7 @@ import kotlinx.coroutines.delay
 
 class AppViewModel: ViewModel() {
 
+    private val tagInfoRepository: NetworkTagInfoRepository = NetworkTagInfoRepository()
     private val _uiState = MutableStateFlow(AppUIState())
 
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
@@ -83,7 +76,7 @@ class AppViewModel: ViewModel() {
                 val uidToSend = uid.uppercase()
 
                 val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-                val response = HitMonitoringApi.retrofitService.getNfcTagInfo(uidToSend)
+                val response = tagInfoRepository.getTagInfo(uid)
 
 
 
@@ -95,7 +88,12 @@ class AppViewModel: ViewModel() {
 
                     } else{
                         Log.d("UI_STATE_UPDATE", "Previous State:")
-                        appDatabase.checkDao().insertAll(Check(time=currentTime, guardID = _uiState.value))
+                        appDatabase.checkDao().insertAll(
+                            Check(time= currentTime,
+                                guardID = _uiState.value.nameOfGuard,
+                                latitude = ,
+                                longitude = ,
+                                ))
                         it.copy(
                             lastControl = Control(
                                 nameOfTheObject = response.tagName,

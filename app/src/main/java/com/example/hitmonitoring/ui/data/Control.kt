@@ -1,4 +1,4 @@
-package com.example.hitmonitoring.data
+package com.example.hitmonitoring.ui.data
 
 data class Control(
     val nameOfTheObject: String = "",

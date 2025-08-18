@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hitmonitoring.R
-import com.example.hitmonitoring.data.Control
+import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 
 

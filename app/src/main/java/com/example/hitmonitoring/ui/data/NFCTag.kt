@@ -1,4 +1,4 @@
-package com.example.hitmonitoring.data
+package com.example.hitmonitoring.ui.data
 
 import kotlinx.serialization.Serializable
 
