@@ -1,5 +1,6 @@
 package com.example.hitmonitoring.data
 
+import android.content.Context
 import com.example.hitmonitoring.network.HitMonitoringApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -9,9 +10,10 @@ import retrofit2.Retrofit
 interface AppContainer {
     //val checkInfoRepository: CheckInfoRepository
     val tagInfoRepository: TagInfoRepository
+    val locationRepository : LocationRepository
 }
 
-class DefaultAppContainer() : AppContainer {
+class DefaultAppContainer(context: Context) : AppContainer {
     private  val baseUrl = "https://hitmonitoring.sk"
 
     private val retrofit = Retrofit.Builder()
@@ -29,4 +31,10 @@ class DefaultAppContainer() : AppContainer {
     override val tagInfoRepository: TagInfoRepository by lazy {
         NetworkTagInfoRepository(retrofitService)
     }
+
+    override val locationRepository: LocationRepository by lazy {
+        LocationRepository(context)
+    }
+
+
 }

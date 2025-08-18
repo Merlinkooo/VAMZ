@@ -5,7 +5,13 @@ import android.net.Uri
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.hitmonitoring.HitMonitoringApplication
+import com.example.hitmonitoring.data.CheckInfoRepository
 import com.example.hitmonitoring.data.NetworkTagInfoRepository
 import com.example.hitmonitoring.ui.data.AppUIState
 import com.example.hitmonitoring.ui.data.Control
@@ -15,7 +21,7 @@ import com.example.hitmonitoring.database.DatabaseProvider
 import com.example.hitmonitoring.database.Entities.Check
 import com.example.hitmonitoring.database.Entities.User
 import com.example.hitmonitoring.network.ConnectionStatus
-import com.example.hitmonitoring.network.HitMonitoringApi
+
 import com.example.hitmonitoring.network.checkServerConnection
 import com.example.hitmonitoring.network.isInternetAvailable
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,9 +36,12 @@ import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.delay
 
-class AppViewModel: ViewModel() {
+class AppViewModel(
+    private val tagInfoRepository: NetworkTagInfoRepository,
+    private val checkInfoRepository: CheckInfoRepository
+): ViewModel() {
 
-    private val tagInfoRepository: NetworkTagInfoRepository = NetworkTagInfoRepository()
+
     private val _uiState = MutableStateFlow(AppUIState())
 
     val uiState: StateFlow<AppUIState> = _uiState.asStateFlow()
@@ -73,7 +82,7 @@ class AppViewModel: ViewModel() {
 
         viewModelScope.launch {
             try {
-                val uidToSend = uid.uppercase()
+
 
                 val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
                 val response = tagInfoRepository.getTagInfo(uid)
@@ -88,12 +97,7 @@ class AppViewModel: ViewModel() {
 
                     } else{
                         Log.d("UI_STATE_UPDATE", "Previous State:")
-                        appDatabase.checkDao().insertAll(
-                            Check(time= currentTime,
-                                guardID = _uiState.value.nameOfGuard,
-                                latitude = ,
-                                longitude = ,
-                                ))
+                        checkInfoRepository.saveControl(Control(response.tagName,currentTime,))
                         it.copy(
                             lastControl = Control(
                                 nameOfTheObject = response.tagName,
@@ -142,6 +146,15 @@ class AppViewModel: ViewModel() {
     fun clearNewObjectDetected() {
         _uiState.update { currentState ->
             currentState.copy(newObjectDetected = false)
+        }
+    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as HitMonitoringApplication)
+                val tagInfoRepository = application.container.tagInfoRepository
+                AppViewModel(tagInfoRepository = tagInfoRepository as NetworkTagInfoRepository)
+            }
         }
     }
 

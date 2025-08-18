@@ -49,7 +49,8 @@ import com.google.android.gms.location.LocationServices
 class MainActivity : ComponentActivity() {
 
     private var nfcAdapter: NfcAdapter? = null
-    private val viewModel: AppViewModel by viewModels()
+    lateinit private var viewModel: AppViewModel
+
     private lateinit var navController: NavHostController
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val appDatabase: AppDatabase = DatabaseProvider.getDatabase(this.baseContext)
@@ -69,6 +70,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             navController = rememberNavController()
             HitMonitoringTheme {
+               viewModel = viewModel(factory = AppViewModel.Factory)
                 HitMonitoringScreen(
                     navController = navController,
                     viewModel = viewModel
@@ -126,29 +128,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun getLocation(onLocationResult: (Location?) -> Unit) {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        Log.d("LOCATION", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
-                    } else {
-                        Log.e("LOCATION", "Last known location is null.")
-                    }
-                    onLocationResult(location)
-                }
-                .addOnFailureListener { e ->
-                    Log.e("LOCATION", "Error getting location: ${e.message}", e)
-                    onLocationResult(null)
-                }
-        } else {
-            onLocationResult(null)
-        }
-    }
+
 }
 
 
