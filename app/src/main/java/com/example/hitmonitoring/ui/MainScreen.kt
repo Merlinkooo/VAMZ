@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hitmonitoring.R
+import com.example.hitmonitoring.database.Entities.Check
 import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 
@@ -76,7 +79,7 @@ fun MainScreen(
                 HitMonitoringButton(
                     Icons.AutoMirrored.Outlined.List,
                     buttonDescription = "History",
-                    onClick = {},
+                    onClick = { },
                     modifier =  Modifier
                         .padding(dimensionResource(R.dimen.small_padding))
                         .fillMaxWidth()
@@ -229,6 +232,48 @@ fun HitMonitoringButton(icon: ImageVector,
     }
 }
 
+@Composable
+fun CheckRow(check: Check,modifier: Modifier= Modifier) {
+    Row(modifier) {
+        Text(
+            text= check.tagId
+        )
+        Text(
+            text = check.time
+        )
+        Text(
+            text = check.guardID
+        )
+    }
+}
+
+@Composable
+fun ChecksHistory(checks : List<Check>) {
+    Column () {
+        Row {
+            Text(
+                text = "Objekt",
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "Čas",
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "Vykonané",
+                textAlign = TextAlign.Center
+            )
+        }
+
+        LazyColumn {
+            items(checks.size) {check ->
+                CheckRow(checks[check -1])
+            }
+        }
+    }
+}
+
+
 @Preview (showBackground = true)
 @Composable
 fun MainScreenPreview() {
@@ -239,7 +284,7 @@ fun MainScreenPreview() {
           lastControl = Control(
               nameOfTheObject = "Office no.6",
               timeOfControl = "08:46:34",
-              gpsCoordinations = " 98.73 , 73.79"
+
           ),
           {}
       )

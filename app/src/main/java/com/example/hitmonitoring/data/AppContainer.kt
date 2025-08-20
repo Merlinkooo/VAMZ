@@ -8,12 +8,13 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
 interface AppContainer {
-    //val checkInfoRepository: CheckInfoRepository
+    val checkInfoRepository: CheckInfoRepository
     val tagInfoRepository: TagInfoRepository
     val locationRepository : LocationRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
+
     private  val baseUrl = "https://hitmonitoring.sk"
 
     private val retrofit = Retrofit.Builder()
@@ -25,9 +26,9 @@ class DefaultAppContainer(context: Context) : AppContainer {
         retrofit.create(HitMonitoringApiService::class.java)
     }
 
-//    override val checkInfoRepository: CheckInfoRepository by lazy {
-//
-//    }
+    override val checkInfoRepository: CheckInfoRepository by lazy {
+        CheckInfoRepositoryImpl(context,retrofitService)
+    }
     override val tagInfoRepository: TagInfoRepository by lazy {
         NetworkTagInfoRepository(retrofitService)
     }

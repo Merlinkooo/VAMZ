@@ -1,9 +1,11 @@
 package com.example.hitmonitoring.ui
 
 import android.content.Context
+import android.location.Location
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -12,6 +14,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.hitmonitoring.HitMonitoringApplication
 import com.example.hitmonitoring.data.CheckInfoRepository
+import com.example.hitmonitoring.data.CheckInfoRepositoryImpl
+import com.example.hitmonitoring.data.LocationRepository
 import com.example.hitmonitoring.data.NetworkTagInfoRepository
 import com.example.hitmonitoring.ui.data.AppUIState
 import com.example.hitmonitoring.ui.data.Control
@@ -38,7 +42,8 @@ import kotlinx.coroutines.delay
 
 class AppViewModel(
     private val tagInfoRepository: NetworkTagInfoRepository,
-    private val checkInfoRepository: CheckInfoRepository
+    private val checkInfoRepository: CheckInfoRepository,
+    private val locationRepository: LocationRepository
 ): ViewModel() {
 
 
@@ -93,16 +98,20 @@ class AppViewModel(
 
                     if(response.tagType == 1) {
                         Log.d("UI_STATE_UPDATE", "Previous State: ")
-                        it.copy(nameOfGuard = response.tagName)
+                        it.copy(nameOfGuard = response.tagName, uidOfGuard = uid)
 
                     } else{
+                        val lastLocation : Location? = locationRepository.getLastLocation()
                         Log.d("UI_STATE_UPDATE", "Previous State:")
-                        checkInfoRepository.saveControl(Control(response.tagName,currentTime,))
+                        checkInfoRepository.saveControl(Control(response.tagName,uid,
+                            currentTime,lastLocation?.longitude,lastLocation?.latitude), _uiState.value.nameOfGuard)
                         it.copy(
                             lastControl = Control(
                                 nameOfTheObject = response.tagName,
+                                uidOfTheObject = uid,
                                 timeOfControl = currentTime),
-                                newObjectDetected = true
+                                newObjectDetected = true,
+
                         )
 
                     }
@@ -153,7 +162,13 @@ class AppViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as HitMonitoringApplication)
                 val tagInfoRepository = application.container.tagInfoRepository
-                AppViewModel(tagInfoRepository = tagInfoRepository as NetworkTagInfoRepository)
+                val checkInfoRepository = application.container.checkInfoRepository
+                val locationRepository = application.container.locationRepository
+
+                AppViewModel(tagInfoRepository = tagInfoRepository as NetworkTagInfoRepository,
+                    checkInfoRepository = checkInfoRepository as CheckInfoRepositoryImpl,
+                    locationRepository = locationRepository
+                )
             }
         }
     }
