@@ -58,12 +58,14 @@ import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
+import com.example.hitmonitoring.ui.ChecksHistory
 
 enum class HitMonitorinScreen {
     Main,
     Scan,
     Report,
-    Confirmation
+    Confirmation,
+    History
 }
 
 
@@ -216,7 +218,7 @@ fun HitMonitoringScreen(
                     navController.popBackStack()
                 }}
             )
-        }
+        }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
 
 
@@ -230,6 +232,7 @@ fun HitMonitoringScreen(
                         nameOfTheGuard = appUiState.nameOfGuard,
                         lastControl = appUiState.lastControl,
                         onReportButtonClicked = {navController.navigate(HitMonitorinScreen.Report.name)},
+                        navController = navController,
                         viewModel = viewModel
                     )
             }
@@ -248,6 +251,9 @@ fun HitMonitoringScreen(
                 ConfirmationScreen()
             }
 
+            composable(route = HitMonitorinScreen.History.name) {
+                ChecksHistory(viewModel.getLastChecks().collectAsState(initial = emptyList()).value)
+            }
 
         }
     }

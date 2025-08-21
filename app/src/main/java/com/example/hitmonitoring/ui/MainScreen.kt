@@ -42,6 +42,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.hitmonitoring.HitMonitorinScreen
 import com.example.hitmonitoring.R
 import com.example.hitmonitoring.database.Entities.Checks
 import com.example.hitmonitoring.ui.data.Control
@@ -55,6 +59,7 @@ fun MainScreen(
     lastControl: Control?,
     onReportButtonClicked : () -> Unit,
     viewModel: AppViewModel,
+    navController : NavHostController,
     modifier : Modifier = Modifier) {
     val mainPadding = dimensionResource(R.dimen.main_padding)
 
@@ -88,6 +93,7 @@ fun MainScreen(
                     onClick =  {
 
                         viewModel.changeShowHistoryStatus()
+                        navController.navigate(HitMonitorinScreen.History.name)
                     },
                     modifier =  Modifier
                         .padding(dimensionResource(R.dimen.small_padding))
@@ -244,46 +250,9 @@ fun HitMonitoringButton(icon: ImageVector,
     }
 }
 
-@Composable
-fun CheckRow(check: Checks,modifier: Modifier= Modifier) {
-    Row(modifier) {
-        Text(
-            text= check.tagId
-        )
-        Text(
-            text = check.time
-        )
-        Text(
-            text = check.guardID
-        )
-    }
-}
 
-@Composable
-fun ChecksHistory(checks : List<Checks>) {
-    Column () {
-        Row {
-            Text(
-                text = "Objekt",
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "Čas",
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "Vykonané",
-                textAlign = TextAlign.Center
-            )
-        }
 
-        LazyColumn {
-            items(checks.size) {check ->
-                CheckRow(checks[check -1])
-            }
-        }
-    }
-}
+
 
 
 //@Preview (showBackground = true)
