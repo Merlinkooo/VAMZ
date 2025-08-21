@@ -28,6 +28,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,9 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hitmonitoring.R
-import com.example.hitmonitoring.database.Entities.Check
+import com.example.hitmonitoring.database.Entities.Checks
 import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -51,8 +54,11 @@ fun MainScreen(
     nameOfTheGuard: String,
     lastControl: Control?,
     onReportButtonClicked : () -> Unit,
+    viewModel: AppViewModel,
     modifier : Modifier = Modifier) {
     val mainPadding = dimensionResource(R.dimen.main_padding)
+
+    val uiState = viewModel.uiState.collectAsState()
     Column(
         modifier = modifier
         .statusBarsPadding()
@@ -79,7 +85,10 @@ fun MainScreen(
                 HitMonitoringButton(
                     Icons.AutoMirrored.Outlined.List,
                     buttonDescription = "History",
-                    onClick = { },
+                    onClick =  {
+
+                        viewModel.changeShowHistoryStatus()
+                    },
                     modifier =  Modifier
                         .padding(dimensionResource(R.dimen.small_padding))
                         .fillMaxWidth()
@@ -94,7 +103,10 @@ fun MainScreen(
                 )
 
         }
-
+        if (uiState.value.showHistory) {
+            val checks = viewModel.getLastChecks().collectAsState(initial = emptyList())
+            ChecksHistory(checks.value)
+        }
     }
 
 }
@@ -221,7 +233,7 @@ fun Info(nameOfTheGuard: String,
 @Composable
 fun HitMonitoringButton(icon: ImageVector,
                         buttonDescription: String,
-                        onClick: () -> Unit,
+                        onClick:  () -> Unit,
                         modifier: Modifier = Modifier) {
 
     Button(onClick = onClick, modifier = modifier) {
@@ -233,7 +245,7 @@ fun HitMonitoringButton(icon: ImageVector,
 }
 
 @Composable
-fun CheckRow(check: Check,modifier: Modifier= Modifier) {
+fun CheckRow(check: Checks,modifier: Modifier= Modifier) {
     Row(modifier) {
         Text(
             text= check.tagId
@@ -248,7 +260,7 @@ fun CheckRow(check: Check,modifier: Modifier= Modifier) {
 }
 
 @Composable
-fun ChecksHistory(checks : List<Check>) {
+fun ChecksHistory(checks : List<Checks>) {
     Column () {
         Row {
             Text(
@@ -274,19 +286,19 @@ fun ChecksHistory(checks : List<Check>) {
 }
 
 
-@Preview (showBackground = true)
-@Composable
-fun MainScreenPreview() {
-
-  HitMonitoringTheme {
-      MainScreen(
-          nameOfTheGuard = "Mike Madison",
-          lastControl = Control(
-              nameOfTheObject = "Office no.6",
-              timeOfControl = "08:46:34",
-
-          ),
-          {}
-      )
-  }
-}
+//@Preview (showBackground = true)
+//@Composable
+//fun MainScreenPreview() {
+//
+//  HitMonitoringTheme {
+//      MainScreen(
+//          nameOfTheGuard = "Mike Madison",
+//          lastControl = Control(
+//              nameOfTheObject = "Office no.6",
+//              timeOfControl = "08:46:34",
+//
+//          ),
+//          {}
+//      )
+//  }
+//}

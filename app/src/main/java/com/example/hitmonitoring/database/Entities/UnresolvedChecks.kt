@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
 
-@Entity
+@Entity(tableName = "unresolved_checks")
 data class UnresolvedChecks(
-    @PrimaryKey(autoGenerate = true) val id: Int=1,
+    @PrimaryKey(autoGenerate = true) val id: Int=0,
     val time: LocalDateTime,
     @ColumnInfo(name = "guard_id") val guardID : String,
     val latitude: Double,

@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.annotation.RequiresPermission
+import com.example.hitmonitoring.data.NetworkTagInfoRepository
+import com.example.hitmonitoring.ui.data.NFCTag
 
 
 enum class ConnectionStatus(val description: String) {
@@ -15,9 +17,9 @@ enum class ConnectionStatus(val description: String) {
 }
 
 
-suspend fun checkServerConnection() : Boolean {
+suspend fun checkServerConnection(networkRepository: NetworkTagInfoRepository) : Boolean {
     return try {
-        HitMonitoringApi.retrofitService.getConnectionStatus()
+        val response : NFCTag = networkRepository.getConnectionStatus()
         true
     } catch (e: Exception) {
         false

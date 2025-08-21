@@ -148,15 +148,15 @@ fun ControlCheckInfo(control: Control, modifier: Modifier = Modifier){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ScreenNFCPriew(){
-    HitMonitoringTheme {
-        ScreenAfterNFCScan(Control(
-            nameOfTheObject =  "Kancelária č.10",
-            timeOfControl = "08:46:53",
-            gpsCoordinations = ""
-            ), Modifier.fillMaxSize()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ScreenNFCPriew(){
+//    HitMonitoringTheme {
+//        ScreenAfterNFCScan(Control(
+//            nameOfTheObject =  "Kancelária č.10",
+//            timeOfControl = "08:46:53",
+//            gpsCoordinations = ""
+//            ), Modifier.fillMaxSize()
+//        )
+//    }
+//}

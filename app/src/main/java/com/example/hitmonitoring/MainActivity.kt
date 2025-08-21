@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val appDatabase: AppDatabase = DatabaseProvider.getDatabase(this.baseContext)
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +62,7 @@ class MainActivity : ComponentActivity() {
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        appDatabase.userDao().insertAll(
-            User("04930C82443686","Straznik ","1",),
-            User("044E884A443682","Straznik ", "2")
-            )
+
 
         setContent {
             navController = rememberNavController()
@@ -122,7 +119,7 @@ class MainActivity : ComponentActivity() {
                 Log.d("NFC", "Tag ID: $hexId")
                 Toast.makeText(this, "NFC tag ID: $hexId", Toast.LENGTH_LONG).show()
 
-                viewModel.getTagInfo(hexId,this.baseContext,appDatabase)
+                viewModel.getTagInfo(hexId)
 
             }
         }

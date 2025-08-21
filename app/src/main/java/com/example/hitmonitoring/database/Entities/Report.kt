@@ -5,10 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
-@Entity
+@Entity(tableName = "reports")
 data class Report(
-    @PrimaryKey(autoGenerate = true) val id :Int=1,
-    @ColumnInfo(name = "id") val time: LocalDateTime,
+    @PrimaryKey(autoGenerate = true) val id :Int=0,
+    val time: Long,
     @ColumnInfo(name = "guard_id") val guardID : String,
     val latitude: Double,
     val longitude: Double,

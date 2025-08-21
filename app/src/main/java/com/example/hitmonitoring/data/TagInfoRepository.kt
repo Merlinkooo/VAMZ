@@ -7,6 +7,7 @@ import retrofit2.Retrofit
 
 interface TagInfoRepository {
     suspend fun getTagInfo(tagId: String): NFCTag
+    suspend fun getConnectionStatus() : NFCTag
 }
 
 class NetworkTagInfoRepository(
@@ -15,4 +16,9 @@ class NetworkTagInfoRepository(
     override suspend fun getTagInfo(tagId: String): NFCTag {
         return tagApiService.getNfcTagInfo(tagId)
     }
+
+    override suspend fun getConnectionStatus(): NFCTag {
+        return tagApiService.getConnectionStatus()
+    }
+
 }

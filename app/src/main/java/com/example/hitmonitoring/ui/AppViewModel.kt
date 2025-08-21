@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -22,12 +23,13 @@ import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.database.AppDatabase
 import com.example.hitmonitoring.database.Converters
 import com.example.hitmonitoring.database.DatabaseProvider
-import com.example.hitmonitoring.database.Entities.Check
+import com.example.hitmonitoring.database.Entities.Checks
 import com.example.hitmonitoring.database.Entities.User
 import com.example.hitmonitoring.network.ConnectionStatus
 
 import com.example.hitmonitoring.network.checkServerConnection
 import com.example.hitmonitoring.network.isInternetAvailable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +41,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import okhttp3.Dispatcher
 
 class AppViewModel(
     private val tagInfoRepository: NetworkTagInfoRepository,
@@ -63,7 +67,7 @@ class AppViewModel(
     private fun startMonitoring() {
         viewModelScope.launch {
             while (true) {
-                _isOnline.value =  if (checkServerConnection())  ConnectionStatus.CONNECTED else ConnectionStatus.SERVER_ERROR
+                _isOnline.value =  if (checkServerConnection(tagInfoRepository))  ConnectionStatus.CONNECTED else ConnectionStatus.SERVER_ERROR
                 delay(30000)
             }
         }
@@ -74,7 +78,7 @@ class AppViewModel(
         viewModelScope.launch {
             if (!isInternetAvailable(context)) {
                 _isOnline.value = ConnectionStatus.NO_INTERNET
-            } else if (!checkServerConnection()) {
+            } else if (checkServerConnection(tagInfoRepository)) {
                 _isOnline.value = ConnectionStatus.SERVER_ERROR
             } else {
                 _isOnline.value = ConnectionStatus.CONNECTED
@@ -82,37 +86,43 @@ class AppViewModel(
         }
     }
 
-    fun getTagInfo(uid: String , context: Context, database: AppDatabase) {
-        val appDatabase: AppDatabase = DatabaseProvider.getDatabase(context)
+    fun getTagInfo(uid: String) {
+
 
         viewModelScope.launch {
             try {
 
 
-                val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-                val response = tagInfoRepository.getTagInfo(uid)
-
-
-
-                _uiState.update {
-
-                    if(response.tagType == 1) {
+                val currentTime = SimpleDateFormat("HH:mm:ss DD.MM.YY", Locale.getDefault()).format(Date())
+                val response = tagInfoRepository.getTagInfo(uid.toUpperCase(androidx.compose.ui.text.intl.Locale.current))
+                if(response.tagType == 1) {
                         Log.d("UI_STATE_UPDATE", "Previous State: ")
-                        it.copy(nameOfGuard = response.tagName, uidOfGuard = uid)
+                        _uiState.update {
+                            it.copy(nameOfGuard = response.tagName, uidOfGuard = uid)
+                        }
 
                     } else{
+
                         val lastLocation : Location? = locationRepository.getLastLocation()
                         Log.d("UI_STATE_UPDATE", "Previous State:")
-                        checkInfoRepository.saveControl(Control(response.tagName,uid,
-                            currentTime,lastLocation?.longitude,lastLocation?.latitude), _uiState.value.nameOfGuard)
-                        it.copy(
-                            lastControl = Control(
-                                nameOfTheObject = response.tagName,
-                                uidOfTheObject = uid,
-                                timeOfControl = currentTime),
-                                newObjectDetected = true,
+                        viewModelScope.launch(Dispatchers.IO) {
+                            checkInfoRepository.saveControl(
+                                Control(
+                                    response.tagName, uid,
+                                    currentTime, lastLocation?.longitude, lastLocation?.latitude
+                                ), _uiState.value.nameOfGuard
+                            )
+                        }
 
-                        )
+                        _uiState.update {
+                            it.copy(
+                                lastControl = Control(
+                                    nameOfTheObject = response.tagName,
+                                    uidOfTheObject = uid,
+                                    timeOfControl = currentTime
+                                ),
+                                newObjectDetected = true
+                            )
 
                     }
 
@@ -123,14 +133,17 @@ class AppViewModel(
                 Log.e("API_ERROR", "Error: ${e.localizedMessage}")
 
             } catch (e: HttpException) {
-                val guard: User? = appDatabase.userDao().findByTag(uid)
-                if (guard !=null) {
-                    _uiState.update {
-                        it.copy(nameOfGuard = guard.firstName + " " + guard.lastName)
-                    }
-                }
-                DatabaseProvider.getDatabase(context)
+//                //val guard: User? = appDatabase.userDao().findByTag(uid)
+//                if (guard !=null) {
+//                    _uiState.update {
+//                        it.copy(nameOfGuard = guard.firstName + " " + guard.lastName)
+//                    }
+//                }
+
                 Log.e("API_ERROR", "Error: ${e.localizedMessage}")
+            }
+            catch (e: Exception)  {
+                Log.e("Error", "Error: ${e.localizedMessage}")
             }
         }
     }
@@ -155,6 +168,16 @@ class AppViewModel(
     fun clearNewObjectDetected() {
         _uiState.update { currentState ->
             currentState.copy(newObjectDetected = false)
+        }
+    }
+
+     fun getLastChecks(): Flow<List<Checks>> {
+
+        return checkInfoRepository.getControlsInfo()
+    }
+    fun changeShowHistoryStatus() {
+        _uiState.update { currentState ->
+            currentState.copy(showHistory = !currentState.showHistory)
         }
     }
     companion object {

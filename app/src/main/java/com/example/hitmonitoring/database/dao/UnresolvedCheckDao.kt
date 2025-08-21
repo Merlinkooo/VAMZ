@@ -8,7 +8,7 @@ import com.example.hitmonitoring.database.Entities.User
 
 interface UnresolvedCheckDao {
 
-        @Query("SELECT * FROM UnresolvedChecks")
+        @Query("SELECT * FROM unresolved_checks")
         fun getAll(): List<UnresolvedChecks>
 
         @Insert
