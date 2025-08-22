@@ -6,7 +6,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.Send
@@ -73,7 +75,8 @@ fun ReportScreen(
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -120,7 +123,7 @@ fun ReportScreen(
                 HitMonitoringButton(
                     icon = Icons.AutoMirrored.Sharp.Send,
                     buttonDescription = stringResource(com.example.hitmonitoring.R.string.send_report),
-                    onClick = {},
+                    onClick = { viewModel.sendReport() },
                     modifier = Modifier.fillMaxWidth()
                 )
 

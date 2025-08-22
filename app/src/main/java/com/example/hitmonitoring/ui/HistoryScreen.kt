@@ -14,59 +14,75 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.hitmonitoring.database.Entities.Checks
 
 @Composable
 fun ChecksHistory(checks : List<Checks>) {
+Column () {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            "Objekt",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            "Čas",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            "Vykonané",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+    }
+    HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
 
+    LazyColumn(
+        modifier =
+            Modifier
+                .wrapContentSize().fillMaxHeight()
+    ) {
 
 
-    LazyColumn (modifier =
-        Modifier
-            .wrapContentSize().height(500.dp)
-            ){
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Objekt", modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                Text("Čas", modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                Text("Vykonané", modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-        }
+        items(count = checks.size) { check ->
 
-        items(count = checks.size) {check ->
-
-                CheckRow(checks[check], modifier = Modifier.fillMaxWidth().wrapContentSize())
+            CheckRow(checks[check], modifier = Modifier.fillMaxWidth())
 
         }
     }
-
+}
 }
 
 
 @Composable
 fun CheckRow(check: Checks,modifier: Modifier= Modifier) {
-    Row(modifier) {
+    Row(modifier, horizontalArrangement = Arrangement.Center) {
         Text(
-            text= check.tagId
+            text= check.tagName,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
         )
         Text(
-            text = check.time
+            text = check.time,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
         )
         Text(
-            text = check.guardID
+            text = check.guardID,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
         )
     }
 }

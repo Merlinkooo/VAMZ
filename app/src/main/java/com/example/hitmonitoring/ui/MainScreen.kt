@@ -109,10 +109,7 @@ fun MainScreen(
                 )
 
         }
-        if (uiState.value.showHistory) {
-            val checks = viewModel.getLastChecks().collectAsState(initial = emptyList())
-            ChecksHistory(checks.value)
-        }
+
     }
 
 }

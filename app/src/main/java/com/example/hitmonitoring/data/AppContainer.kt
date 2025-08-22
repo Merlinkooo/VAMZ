@@ -1,6 +1,8 @@
 package com.example.hitmonitoring.data
 
 import android.content.Context
+import com.example.hitmonitoring.database.AppDatabase
+import com.example.hitmonitoring.database.DatabaseProvider
 import com.example.hitmonitoring.network.HitMonitoringApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -11,9 +13,10 @@ interface AppContainer {
     val checkInfoRepository: CheckInfoRepository
     val tagInfoRepository: TagInfoRepository
     val locationRepository : LocationRepository
+    val appDatabase : AppDatabase
 }
 
-class DefaultAppContainer(context: Context) : AppContainer {
+class DefaultAppContainer(val context: Context) : AppContainer {
 
     private  val baseUrl = "https://hitmonitoring.sk"
 
@@ -36,6 +39,8 @@ class DefaultAppContainer(context: Context) : AppContainer {
     override val locationRepository: LocationRepository by lazy {
         LocationRepository(context)
     }
+    override val appDatabase: AppDatabase
+        get() = DatabaseProvider.getDatabase(context = context)
 
 
 }

@@ -32,12 +32,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.hitmonitoring.HitMonitorinScreen
+import com.example.hitmonitoring.HitMonitoringScreen
 import com.example.hitmonitoring.R
 import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.ui.theme.HitMonitoringTheme
 
 @Composable
-fun ScreenAfterNFCScan(control: Control, modifier: Modifier = Modifier) {
+fun ScreenAfterNFCScan(control: Control,
+                       navController: NavHostController,
+                       viewModel: AppViewModel,
+                       modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
@@ -61,7 +69,10 @@ fun ScreenAfterNFCScan(control: Control, modifier: Modifier = Modifier) {
         HitMonitoringButton(
             icon = Icons.Default.Warning,
             buttonDescription = stringResource(R.string.make_report),
-            onClick = {},
+            onClick = {
+                viewModel.createReportWhileControl()
+                navController.navigate(HitMonitorinScreen.Report.name)
+                      },
             modifier = Modifier
                 .fillMaxWidth()
         )

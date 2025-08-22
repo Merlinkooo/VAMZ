@@ -13,6 +13,7 @@ data class Report(
     val latitude: Double,
     val longitude: Double,
     val tag: String,
+    val imageUri: String
 )
 
 

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CheckDao {
-    @Query("SELECT * FROM checks order by time DESC")
+    @Query("SELECT * FROM checks order by time DESC LIMIT 20")
     fun getAll(): Flow<List<Checks>>
 
 

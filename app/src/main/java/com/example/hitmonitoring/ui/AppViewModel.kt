@@ -93,7 +93,7 @@ class AppViewModel(
             try {
 
 
-                val currentTime = SimpleDateFormat("HH:mm:ss DD.MM.YY", Locale.getDefault()).format(Date())
+                val currentTime = SimpleDateFormat("HH:mm:ss dd.MM.yy", Locale.getDefault()).format(Date())
                 val response = tagInfoRepository.getTagInfo(uid.toUpperCase(androidx.compose.ui.text.intl.Locale.current))
                 if(response.tagType == 1) {
                         Log.d("UI_STATE_UPDATE", "Previous State: ")
@@ -164,6 +164,12 @@ class AppViewModel(
             currentState.copy(imageUri = uri)
         }
     }
+    fun createReportWhileControl() {
+        _uiState.update { currentState ->
+            currentState.copy(incidentWhileControl = true)
+        }
+    }
+
 
     fun clearNewObjectDetected() {
         _uiState.update { currentState ->
@@ -180,6 +186,11 @@ class AppViewModel(
             currentState.copy(showHistory = !currentState.showHistory)
         }
     }
+
+    fun sendReport() {
+
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

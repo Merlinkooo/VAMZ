@@ -237,7 +237,7 @@ fun HitMonitoringScreen(
                     )
             }
             composable(route = HitMonitorinScreen.Scan.name) {
-                ScreenAfterNFCScan(appUiState.lastControl)
+                ScreenAfterNFCScan(appUiState.lastControl,navController = navController,viewModel = viewModel)
             }
 
             composable(route = HitMonitorinScreen.Report.name) {

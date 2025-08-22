@@ -10,6 +10,7 @@ data class AppUIState(
     var lastControls : List<Checks> = listOf(),
     val lastControl: Control = Control(),
     val newObjectDetected: Boolean = false,
+    val incidentWhileControl: Boolean = false,
     val incidentDescription: String = "",
     val imageUri: Uri = Uri.EMPTY,
     val showHistory: Boolean = false
