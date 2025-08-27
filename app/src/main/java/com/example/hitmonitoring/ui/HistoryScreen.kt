@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -39,6 +41,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +66,8 @@ fun ChecksHistory(checks : List<Checks>, reports: List<Report>) {
     Column () {
     Row (modifier = Modifier
         .fillMaxWidth()
-        .padding(bottom = 8.dp),
+        .padding(bottom = 8.dp)
+        , horizontalArrangement = Arrangement.SpaceBetween
 
     ) {
         TextButton(onClick = {
@@ -191,9 +195,11 @@ fun ReportMoreInfo(report: Report?, moreInfoClicked: MutableState<Boolean>) {
     Dialog(onDismissRequest = {
         moreInfoClicked.value = false
     }) {
-        Card(modifier = Modifier.wrapContentSize()) {
-            Column(Modifier.scrollable(state = rememberScrollState(), Orientation.Vertical)) {
-            Text(text = report?.imageUri ?: "bez cesty")
+        Card(Modifier.padding(bottom = 16.dp)) {
+            Column(Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+            ) {
 
                 AsyncImage(
                     model = report?.imageUri?.toUri(),
@@ -201,9 +207,11 @@ fun ReportMoreInfo(report: Report?, moreInfoClicked: MutableState<Boolean>) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(400.dp)
-                        .padding(8.dp),
+                        .clip(RoundedCornerShape(16.dp)),
+
                     contentScale = ContentScale.Crop
                 )
+                Text(text = "Popis incidentu", fontWeight = FontWeight.Bold)
                 Text(text = report?.description ?: "Bez popisu")
             }
         }
