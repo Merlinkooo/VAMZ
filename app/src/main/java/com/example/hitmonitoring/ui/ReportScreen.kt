@@ -64,6 +64,7 @@ fun ReportScreen(
 
     val context = LocalContext.current
 
+
         // Launcher pre spustenie aktivity fotoaparátu
             val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture(),
@@ -76,7 +77,8 @@ fun ReportScreen(
                 }
 
             }
-        )
+            )
+
             Column(
                 modifier = Modifier
                     .padding(16.dp)
@@ -108,7 +110,7 @@ fun ReportScreen(
 
                             val uri = createImageUri(context)
                             imageUri = uri
-                            cameraLauncher.launch(uri)
+                            cameraLauncher.launch(imageUri)
 
                     }
                 ) {
@@ -129,8 +131,9 @@ fun ReportScreen(
                     icon = Icons.AutoMirrored.Sharp.Send,
                     buttonDescription = stringResource(com.example.hitmonitoring.R.string.send_report),
                     onClick = {
+
                         viewModel.sendReport()
-                        viewModel.eraseImageUri()
+
                         navHostController.navigate(HitMonitorinScreen.Main.name)
                               },
                     modifier = Modifier.fillMaxWidth()

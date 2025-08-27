@@ -1,6 +1,8 @@
 package com.example.hitmonitoring.ui
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.widget.ImageView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,10 +38,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.hitmonitoring.database.Entities.Checks
 import com.example.hitmonitoring.database.Entities.Report
@@ -169,16 +174,16 @@ fun ReportRow(report: Report,
               moreInfoSelected: MutableState<Boolean>) {
     Row(modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text= report.time,modifier = Modifier.weight(1f), textAlign = TextAlign.Left
+            text= report.time,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
         )
         Text(
-            text = report.guardID,modifier = Modifier.weight(1f)
+            text = report.guardID,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
         )
         IconButton(onClick = {
             reportSelected.value = report
             moreInfoSelected.value = !moreInfoSelected.value
 
-        }) {
+        },modifier = Modifier.weight(1f)) {
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = "Informácie o reporte")
@@ -191,14 +196,20 @@ fun ReportMoreInfo(report: Report?, moreInfoClicked: MutableState<Boolean>) {
     Dialog(onDismissRequest = {
         moreInfoClicked.value = false
     }) {
-        Column() {
-            AsyncImage(
-                model = report?.imageUri, // tu dáš URL alebo aj file path
-                contentDescription = "Report image",
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
-            Text(text = report?.description?: "Bez popisu")
+        Card(modifier = Modifier.wrapContentSize(align = Alignment.Center)) {
+            Column {
+            Text(text = report?.imageUri ?: "bez cesty")
+
+                AsyncImage(
+                    model = report?.imageUri?.toUri(),
+                    contentDescription = "Report image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = report?.description ?: "Bez popisu")
+            }
         }
     }
 }

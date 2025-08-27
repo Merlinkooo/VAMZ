@@ -204,9 +204,10 @@ class AppViewModel(
                         latitude = uiState.value.lastControl.latitude,
                         longitude = uiState.value.lastControl.longitude ,
                         tag = uiState.value.lastControl.uidOfTheObject,
-                        imageUri = if (uiState.value.imageUri.path != null) uiState.value.imageUri.path.toString() else "dfa",
+                        imageUri = uiState.value.imageUri.toString(),
                         description = uiState.value.incidentDescription
                     ))
+                eraseImageUri()
             } else {
                 val currentTime = SimpleDateFormat("HH:mm:ss dd.MM.yy", Locale.getDefault()).format(Date())
                 reportRepository.saveReport(
@@ -216,10 +217,10 @@ class AppViewModel(
                         latitude = uiState.value.lastControl.latitude,
                         longitude = uiState.value.lastControl.longitude ,
                         tag = null,
-                        imageUri = if (uiState.value.imageUri.path != null) uiState.value.imageUri.path.toString() else "dfa",
+                        imageUri = uiState.value.imageUri.toString() ,
                         description = uiState.value.incidentDescription
                     ))
-
+                eraseImageUri()
             }
 
         }
