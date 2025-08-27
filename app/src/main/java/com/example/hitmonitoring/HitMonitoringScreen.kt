@@ -243,6 +243,7 @@ fun HitMonitoringScreen(
             composable(route = HitMonitorinScreen.Report.name) {
                 ReportScreen(
                     viewModel,
+                    navHostController = navController,
                     {newText -> viewModel.updateIncidentDescription(newText) }
                     )
             }
@@ -252,7 +253,8 @@ fun HitMonitoringScreen(
             }
 
             composable(route = HitMonitorinScreen.History.name) {
-                ChecksHistory(viewModel.getLastChecks().collectAsState(initial = emptyList()).value)
+                ChecksHistory(viewModel.getLastChecks().collectAsState(initial = emptyList()).value,
+                    viewModel.getReports().collectAsState(initial = emptyList()).value)
             }
 
         }

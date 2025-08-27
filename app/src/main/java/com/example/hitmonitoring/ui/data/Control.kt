@@ -4,6 +4,6 @@ data class Control(
     val nameOfTheObject: String = "",
     val uidOfTheObject: String = "",
     val timeOfControl: String = "",
-    val longitude: Double? = 0.0,
-    val latitude: Double? = 0.0
+    val longitude: Double = 0.0,
+    val latitude: Double = 0.0
 )

@@ -2,6 +2,7 @@ package com.example.hitmonitoring.ui
 
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -40,7 +41,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.core.content.FileProvider
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.hitmonitoring.HitMonitorinScreen
 import java.io.File
 
 
@@ -50,6 +54,7 @@ import java.io.File
 @Composable
 fun ReportScreen(
     viewModel: AppViewModel = viewModel(),
+    navHostController: NavHostController,
     onDescriptionChanged : (String) -> Unit
     ){
 
@@ -123,7 +128,11 @@ fun ReportScreen(
                 HitMonitoringButton(
                     icon = Icons.AutoMirrored.Sharp.Send,
                     buttonDescription = stringResource(com.example.hitmonitoring.R.string.send_report),
-                    onClick = { viewModel.sendReport() },
+                    onClick = {
+                        viewModel.sendReport()
+                        viewModel.eraseImageUri()
+                        navHostController.navigate(HitMonitorinScreen.Main.name)
+                              },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -191,7 +200,8 @@ fun ReportInfoCard(
 
 
 fun createImageUri(context: Context): Uri {
-    val imageFile = File.createTempFile("incident_", ".jpg", context.cacheDir)
+    val imageFile = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+        "incident_${System.currentTimeMillis()}.jpg")
     return FileProvider.getUriForFile(
         context,
         "${context.packageName}.provider", // v build.gradle: authorities
@@ -199,9 +209,9 @@ fun createImageUri(context: Context): Uri {
     )
 }
 
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
-@Composable
-fun ImageCardScreenPreview() {
-    ReportScreen(viewModel = viewModel(), { })
-}
+//@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+//@Composable
+//fun ImageCardScreenPreview() {
+//    ReportScreen(viewModel = viewModel(), { })
+//}
 

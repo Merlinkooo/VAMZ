@@ -18,18 +18,21 @@ import com.example.hitmonitoring.data.CheckInfoRepository
 import com.example.hitmonitoring.data.CheckInfoRepositoryImpl
 import com.example.hitmonitoring.data.LocationRepository
 import com.example.hitmonitoring.data.NetworkTagInfoRepository
+import com.example.hitmonitoring.data.ReportInfoRepositoryImpl
 import com.example.hitmonitoring.ui.data.AppUIState
 import com.example.hitmonitoring.ui.data.Control
 import com.example.hitmonitoring.database.AppDatabase
 import com.example.hitmonitoring.database.Converters
 import com.example.hitmonitoring.database.DatabaseProvider
 import com.example.hitmonitoring.database.Entities.Checks
+import com.example.hitmonitoring.database.Entities.Report
 import com.example.hitmonitoring.database.Entities.User
 import com.example.hitmonitoring.network.ConnectionStatus
 
 import com.example.hitmonitoring.network.checkServerConnection
 import com.example.hitmonitoring.network.isInternetAvailable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +50,8 @@ import okhttp3.Dispatcher
 class AppViewModel(
     private val tagInfoRepository: NetworkTagInfoRepository,
     private val checkInfoRepository: CheckInfoRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val reportRepository: ReportInfoRepositoryImpl
 ): ViewModel() {
 
 
@@ -109,7 +113,9 @@ class AppViewModel(
                             checkInfoRepository.saveControl(
                                 Control(
                                     response.tagName, uid,
-                                    currentTime, lastLocation?.longitude, lastLocation?.latitude
+                                    currentTime,
+                                    longitude =  if (lastLocation?.longitude != null) lastLocation?.longitude!!.toDouble() else 0.0,
+                                    latitude = if (lastLocation?.latitude != null) lastLocation?.latitude!!.toDouble() else 0.0,
                                 ), _uiState.value.nameOfGuard
                             )
                         }
@@ -171,6 +177,7 @@ class AppViewModel(
     }
 
 
+
     fun clearNewObjectDetected() {
         _uiState.update { currentState ->
             currentState.copy(newObjectDetected = false)
@@ -188,9 +195,38 @@ class AppViewModel(
     }
 
     fun sendReport() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if(_uiState.value.incidentWhileControl) {
+                reportRepository.saveReport(
+                    Report(
+                        time = uiState.value.lastControl.timeOfControl,
+                        guardID = uiState.value.uidOfGuard,
+                        latitude = uiState.value.lastControl.latitude,
+                        longitude = uiState.value.lastControl.longitude ,
+                        tag = uiState.value.lastControl.uidOfTheObject,
+                        imageUri = if (uiState.value.imageUri.path != null) uiState.value.imageUri.path.toString() else "dfa",
+                        description = uiState.value.incidentDescription
+                    ))
+            } else {
+                val currentTime = SimpleDateFormat("HH:mm:ss dd.MM.yy", Locale.getDefault()).format(Date())
+                reportRepository.saveReport(
+                    Report(
+                        time = currentTime,
+                        guardID = uiState.value.uidOfGuard,
+                        latitude = uiState.value.lastControl.latitude,
+                        longitude = uiState.value.lastControl.longitude ,
+                        tag = null,
+                        imageUri = if (uiState.value.imageUri.path != null) uiState.value.imageUri.path.toString() else "dfa",
+                        description = uiState.value.incidentDescription
+                    ))
 
+            }
+
+        }
     }
-
+    fun getReports(): Flow<List<Report>> {
+        return reportRepository.getReports()
+    }
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -198,10 +234,13 @@ class AppViewModel(
                 val tagInfoRepository = application.container.tagInfoRepository
                 val checkInfoRepository = application.container.checkInfoRepository
                 val locationRepository = application.container.locationRepository
+                val reportRepository = application.container.reportInfoRepository
 
                 AppViewModel(tagInfoRepository = tagInfoRepository as NetworkTagInfoRepository,
                     checkInfoRepository = checkInfoRepository as CheckInfoRepositoryImpl,
-                    locationRepository = locationRepository
+                    locationRepository = locationRepository,
+                    reportRepository = reportRepository as ReportInfoRepositoryImpl
+
                 )
             }
         }

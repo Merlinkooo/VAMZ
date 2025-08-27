@@ -13,6 +13,7 @@ interface AppContainer {
     val checkInfoRepository: CheckInfoRepository
     val tagInfoRepository: TagInfoRepository
     val locationRepository : LocationRepository
+    val reportInfoRepository: ReportInfoRepository
     val appDatabase : AppDatabase
 }
 
@@ -39,8 +40,13 @@ class DefaultAppContainer(val context: Context) : AppContainer {
     override val locationRepository: LocationRepository by lazy {
         LocationRepository(context)
     }
+    override val reportInfoRepository: ReportInfoRepository by lazy {
+        ReportInfoRepositoryImpl(appDatabase.reportDao())
+    }
+
     override val appDatabase: AppDatabase
         get() = DatabaseProvider.getDatabase(context = context)
+
 
 
 }

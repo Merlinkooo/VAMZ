@@ -12,7 +12,7 @@ import com.example.hitmonitoring.database.dao.ReportDao
 import com.example.hitmonitoring.database.dao.UserDao
 
 
-@Database(entities = [User::class, Checks::class, Report::class], version = 3)
+@Database(entities = [User::class, Checks::class, Report::class], version = 4)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun checkDao(): CheckDao
