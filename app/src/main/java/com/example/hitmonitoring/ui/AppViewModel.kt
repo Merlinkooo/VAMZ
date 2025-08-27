@@ -82,7 +82,7 @@ class AppViewModel(
         viewModelScope.launch {
             if (!isInternetAvailable(context)) {
                 _isOnline.value = ConnectionStatus.NO_INTERNET
-            } else if (checkServerConnection(tagInfoRepository)) {
+            } else if (!checkServerConnection(tagInfoRepository)) {
                 _isOnline.value = ConnectionStatus.SERVER_ERROR
             } else {
                 _isOnline.value = ConnectionStatus.CONNECTED

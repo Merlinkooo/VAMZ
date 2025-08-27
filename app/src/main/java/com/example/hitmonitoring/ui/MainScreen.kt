@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -83,8 +84,7 @@ fun MainScreen(
         )
 
         Column(
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.big_padding))
+        
                 ) {
 
                 HitMonitoringButton(
@@ -240,9 +240,13 @@ fun HitMonitoringButton(icon: ImageVector,
                         modifier: Modifier = Modifier) {
 
     Button(onClick = onClick, modifier = modifier) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(imageVector = icon, contentDescription = buttonDescription)
-            Text(text = buttonDescription)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(imageVector = icon,
+                contentDescription = buttonDescription,
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(36.dp))
+            Text(text = buttonDescription, fontSize = 20.sp )
         }
     }
 }
