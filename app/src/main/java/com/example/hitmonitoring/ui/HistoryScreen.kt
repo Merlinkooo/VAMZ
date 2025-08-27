@@ -5,6 +5,8 @@ import android.net.Uri
 import android.widget.ImageView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -126,12 +128,7 @@ fun ChecksHistory(checks : List<Checks>, reports: List<Report>) {
                 .padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                "Gurd ID",
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
+
             Text(
                 "Čas",
                 modifier = Modifier.weight(1f),
@@ -176,9 +173,7 @@ fun ReportRow(report: Report,
         Text(
             text= report.time,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
         )
-        Text(
-            text = report.guardID,modifier = Modifier.weight(1f), textAlign = TextAlign.Center
-        )
+
         IconButton(onClick = {
             reportSelected.value = report
             moreInfoSelected.value = !moreInfoSelected.value
@@ -196,8 +191,8 @@ fun ReportMoreInfo(report: Report?, moreInfoClicked: MutableState<Boolean>) {
     Dialog(onDismissRequest = {
         moreInfoClicked.value = false
     }) {
-        Card(modifier = Modifier.wrapContentSize(align = Alignment.Center)) {
-            Column {
+        Card(modifier = Modifier.wrapContentSize()) {
+            Column(Modifier.scrollable(state = rememberScrollState(), Orientation.Vertical)) {
             Text(text = report?.imageUri ?: "bez cesty")
 
                 AsyncImage(
@@ -205,7 +200,8 @@ fun ReportMoreInfo(report: Report?, moreInfoClicked: MutableState<Boolean>) {
                     contentDescription = "Report image",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp),
+                        .height(400.dp)
+                        .padding(8.dp),
                     contentScale = ContentScale.Crop
                 )
                 Text(text = report?.description ?: "Bez popisu")
